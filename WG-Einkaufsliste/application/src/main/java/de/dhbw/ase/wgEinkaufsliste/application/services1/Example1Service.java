@@ -1,4 +1,4 @@
-package de.shbw.ase.wgEinkaufsliste.application.services1;
+package de.dhbw.ase.wgEinkaufsliste.application.services1;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
