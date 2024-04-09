@@ -1,18 +1,18 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.representations.mappers;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.PublicGroup;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.GroupDTO;
 import de.dhbw.ase.wgEinkaufsliste.domain.entities.Group;
 
 import java.util.function.Function;
 
-public class GroupToPublicGroupMapper implements Function<Group, PublicGroup> {
+public class GroupToGroupDTOMapper implements Function<Group, GroupDTO> {
 
     @Override
-    public PublicGroup apply(Group group) {
+    public GroupDTO apply(Group group) {
         return map(group);
     }
 
-    private PublicGroup map(Group group) {
+    private GroupDTO map(Group group) {
         return null;
     }
 }

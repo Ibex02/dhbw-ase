@@ -1,8 +1,5 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.entities;
 
-import de.dhbw.ase.wgEinkaufsliste.domain.values.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import org.apache.commons.lang3.Validate;
 import org.springframework.data.mongodb.core.mapping.Document;

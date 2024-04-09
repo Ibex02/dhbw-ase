@@ -1,4 +1,4 @@
-package de.dhbw.ase.wgEinkaufsliste.plugins.rest;
+package de.dhbw.ase.wgEinkaufsliste.plugins.rest.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

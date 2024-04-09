@@ -7,22 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document("Groups")
-public class GroupEntity {
+public class GroupRecord {
 
     @Id
     private String id;
-
     private String name;
-    private List<String> usersIds = new ArrayList<>();
-    private List<String> listIds = new ArrayList<>();
 
-    protected GroupEntity() { }
+    private List<String> users = new ArrayList<>();
+    private List<String> lists = new ArrayList<>();
 
-    public GroupEntity(String id, String name, List<String> usersIds, List<String> listIds) {
+    public GroupRecord(String id, String name, List<String> users, List<String> lists) {
         this.id = id;
         this.name = name;
-        this.usersIds = usersIds;
-        this.listIds = listIds;
+        this.users = users;
+        this.lists = lists;
     }
 
     public String getId() {
@@ -33,11 +31,11 @@ public class GroupEntity {
         return name;
     }
 
-    public List<String> getUsersIds() {
-        return usersIds;
+    public List<String> getUsers() {
+        return users;
     }
 
-    public List<String> getListIds() {
-        return listIds;
+    public List<String> getLists() {
+        return lists;
     }
 }

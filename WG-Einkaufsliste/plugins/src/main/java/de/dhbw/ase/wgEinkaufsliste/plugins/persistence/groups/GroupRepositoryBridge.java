@@ -1,8 +1,8 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.persistence.groups;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.GroupEntity;
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.mappers.GroupEntityToGroupMapper;
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.mappers.GroupToGroupEntityMapper;
+import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.GroupRecord;
+import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.mappers.GroupRecordToGroupMapper;
+import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.mappers.GroupToGroupRecordMapper;
 import de.dhbw.ase.wgEinkaufsliste.domain.entities.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.repositories.GroupsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +13,12 @@ import java.util.List;
 @Repository
 public class GroupRepositoryBridge implements GroupsRepository {
 
-    private final SpringDateGroupRepository repository;
-    private final GroupEntityToGroupMapper mapFromEntity;
-    private final GroupToGroupEntityMapper mapToEntity;
+    private final MongoGroupRepository repository;
+    private final GroupRecordToGroupMapper mapFromEntity;
+    private final GroupToGroupRecordMapper mapToEntity;
 
     @Autowired
-    public GroupRepositoryBridge(SpringDateGroupRepository repository, GroupEntityToGroupMapper mapFromEntity, GroupToGroupEntityMapper mapToEntity) {
+    public GroupRepositoryBridge(MongoGroupRepository repository, GroupRecordToGroupMapper mapFromEntity, GroupToGroupRecordMapper mapToEntity) {
         this.repository = repository;
         this.mapFromEntity = mapFromEntity;
         this.mapToEntity = mapToEntity;
@@ -40,7 +40,7 @@ public class GroupRepositoryBridge implements GroupsRepository {
 
     @Override
     public void save(Group group) {
-        GroupEntity entity = mapToEntity.apply(group);
+        GroupRecord entity = mapToEntity.apply(group);
         repository.save(entity);
     }
 
