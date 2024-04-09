@@ -14,7 +14,7 @@ public class ShoppingList {
     private UUID id;
     private String name;
     private List<ShoppingListItem> list = new ArrayList<>();
-    private List<UUID> userIds;
+    private UUID groupId;
 
     protected ShoppingList() { }
 

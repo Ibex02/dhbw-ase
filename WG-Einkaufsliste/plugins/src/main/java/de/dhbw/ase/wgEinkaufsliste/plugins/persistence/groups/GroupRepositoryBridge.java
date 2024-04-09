@@ -14,34 +14,34 @@ import java.util.List;
 public class GroupRepositoryBridge implements GroupsRepository {
 
     private final MongoGroupRepository repository;
-    private final GroupRecordToGroupMapper mapFromEntity;
-    private final GroupToGroupRecordMapper mapToEntity;
+    private final GroupRecordToGroupMapper mapFromRecord;
+    private final GroupToGroupRecordMapper mapToRecord;
 
     @Autowired
-    public GroupRepositoryBridge(MongoGroupRepository repository, GroupRecordToGroupMapper mapFromEntity, GroupToGroupRecordMapper mapToEntity) {
+    public GroupRepositoryBridge(MongoGroupRepository repository, GroupRecordToGroupMapper mapFromRecord, GroupToGroupRecordMapper mapToRecord) {
         this.repository = repository;
-        this.mapFromEntity = mapFromEntity;
-        this.mapToEntity = mapToEntity;
+        this.mapFromRecord = mapFromRecord;
+        this.mapToRecord = mapToRecord;
     }
 
     @Override
     public Group findGroupById(String id) {
         var result = repository.findById(id);
         if (result.isPresent()) {
-            return mapFromEntity.apply(result.get());
+            return mapFromRecord.apply(result.get());
         }
         return null;
     }
 
     @Override
     public List<Group> findAllGroups() {
-        return repository.findAll().stream().map(mapFromEntity).toList();
+        return repository.findAll().stream().map(mapFromRecord).toList();
     }
 
     @Override
     public void save(Group group) {
-        GroupRecord entity = mapToEntity.apply(group);
-        repository.save(entity);
+        GroupRecord record = mapToRecord.apply(group);
+        repository.save(record);
     }
 
     @Override

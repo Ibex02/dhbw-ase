@@ -1,6 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.controller;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.GroupDTO;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.groups.GroupResource;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingLists.ShoppingListResource;
 import de.dhbw.ase.wgEinkaufsliste.application.groups.GroupsApplicationService;
 import de.dhbw.ase.wgEinkaufsliste.domain.entities.Group;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/v1.0/groups")
+@RequestMapping(value = "${apiPrefix}/groups")
 public class GroupsController {
     private final GroupsApplicationService groupsService;
 
@@ -19,36 +20,45 @@ public class GroupsController {
         this.groupsService = groupsService;
     }
 
-    @GetMapping("/test")
-    public String test(Authentication auth) {
-        Group group = groupsService.createNewGroup();
-        return "created: " + group.getId() + " " + auth.getName();
-    }
-
-    @GetMapping("/{id}")
-    public GroupDTO getGroup(@PathVariable String id, Authentication auth) {
+    @GetMapping("/{groupId}")
+    public GroupResource getGroup(Authentication auth, @PathVariable String groupId) {
         return null;
     }
 
     @GetMapping("")
-    public List<GroupDTO> getAllGroupsForUser(Authentication auth) {
+    public List<GroupResource> getAllGroups(Authentication auth) {
         return null;
     }
 
-    @PutMapping("/{id}/users")
-    public void addUser() {
+    @PostMapping("")
+    public String createGroup(Authentication auth, String name) {
+
+        Group group = groupsService.createNewGroup();
+        return "created: " + group.getId() + " " + auth.getName();
+    }
+
+    @PutMapping("/{groupId}/name")
+    public void changeName(Authentication auth, @PathVariable String groupId, String newName) {
 
     }
 
-    @DeleteMapping()
-    public void removeUser() {
+    @PutMapping("/{groupId}/users")
+    public void addUser(Authentication auth, @PathVariable String groupId, String userId) {
 
     }
 
-    public void createList() {
+    @DeleteMapping("/{groupId}/users/{userId}")
+    public void removeUser(Authentication auth, @PathVariable String groupId, @PathVariable String userId) {
 
     }
 
+    @GetMapping("/{groupId}/lists")
+    public List<ShoppingListResource> getLists(Authentication auth, @PathVariable String groupId) {
+        return null;
+    }
 
+    @PostMapping("/{groupId}/lists")
+    public void createList(Authentication auth, @PathVariable String groupId) {
 
+    }
 }

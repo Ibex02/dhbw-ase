@@ -1,14 +1,15 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.controller;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.ShoppingListDTO;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingLists.ShoppingListResource;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "api/v1.0/lists")
+@RequestMapping(value = "${apiPrefix}/lists")
 public class ShoppingListController {
 
     @GetMapping("/{listId}")
-    public ShoppingListDTO get(@PathVariable String listId) {
+    public ShoppingListResource get(@PathVariable String listId) {
         return null;
     }
 
@@ -29,6 +30,11 @@ public class ShoppingListController {
 
     @DeleteMapping("/{listId}/items/{itemId}")
     public void deleteItem(@PathVariable String listId, @PathVariable String itemId) {
+
+    }
+
+    @PutMapping("/{listId}/name")
+    public void changeName(Authentication auth, @PathVariable String listId, String newName) {
 
     }
 
