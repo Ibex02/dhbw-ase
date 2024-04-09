@@ -4,15 +4,15 @@ import org.apache.commons.lang3.Validate;
 
 public class Price {
 
-    private int amount;
+    private double value;
 
-    public Price(int amount) {
-        Validate.inclusiveBetween(0, Integer.MAX_VALUE, amount);
+    public Price(double value) {
+        Validate.inclusiveBetween(0, Integer.MAX_VALUE, value);
 
-        this.amount = amount;
+        this.value = value;
     }
 
-    public int getAmount() {
-        return amount;
+    public double getValue() {
+        return value;
     }
 }

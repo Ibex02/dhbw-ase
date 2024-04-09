@@ -1,11 +1,14 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.representations.group;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Component
@@ -26,6 +29,22 @@ public class GroupToGroupResourceMapper implements Function<Group, GroupResource
     }
 
     private GroupResource map(Group group) {
-        return null;
+        return new GroupResource(group.getId(), group.getName(), mapUsers(group.getUsersIds()), mapLists(group.getListIds()));
+    }
+
+    private List<GroupResource.GroupResourceUser> mapUsers(List<String> lists) {
+        return lists.stream().map(x -> map(userRepository.findById(x))).toList();
+    }
+
+    private GroupResource.GroupResourceUser map(User user) {
+        return new GroupResource.GroupResourceUser(user.getId(), user.getName());
+    }
+
+    private List<GroupResource.GroupResourceList> mapLists(List<String> lists) {
+        return lists.stream().map(x -> map(shoppingListRepository.findById(x))).toList();
+    }
+
+    private GroupResource.GroupResourceList map(ShoppingList list) {
+        return new GroupResource.GroupResourceList(list.getId(), list.getName());
     }
 }

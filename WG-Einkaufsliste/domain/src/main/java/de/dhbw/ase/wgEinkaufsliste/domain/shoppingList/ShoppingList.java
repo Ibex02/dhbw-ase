@@ -1,32 +1,40 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.shoppingList;
 
-import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
-import jakarta.persistence.Id;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import org.apache.commons.lang3.Validate;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
-@Document("shopping-lists")
 public class ShoppingList {
-    @Id
-    private UUID id;
+    private final String id;
+    private final String groupId;
     private String name;
-    private List<ShoppingListItem> list = new ArrayList<>();
-    private UUID groupId;
+    private List<ShoppingListItem> items = new ArrayList<>();
 
-    protected ShoppingList() { }
-
-    public ShoppingList(String name) {
-        Validate.notBlank(name);
-
-        this.id = UUID.randomUUID();
+    public ShoppingList(String id, String groupId, String name, List<ShoppingListItem> items) {
+        this.id = id;
+        this.groupId = groupId;
         this.name = name;
+        this.items = items;
+
+        validate();
     }
 
-    public UUID getId() {
+    public ShoppingList(Group group, String name) {
+
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+
+        group.addList(this);
+        this.groupId = group.getId();
+
+        validate();
+    }
+
+    public String getId() {
         return id;
     }
 
@@ -34,7 +42,31 @@ public class ShoppingList {
         return name;
     }
 
+    public void setName(String name) {
+        Validate.notBlank(name);
+        this.name = name;
+    }
+
     public void addItem(ShoppingListItem item) {
-        list.add(item);
+        items.add(item);
+    }
+
+    public void removeItemById(String itemId) {
+        items.removeIf(x -> Objects.equals(x.getId(), itemId));
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public List<ShoppingListItem> getItems() {
+        return items;
+    }
+
+
+    private void validate() {
+        Validate.notBlank(id);
+        Validate.notBlank(groupId);
+        Validate.notBlank(name);
     }
 }

@@ -1,6 +1,8 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.user;
 
 public interface UserRepository {
-    User findUserByEmail(String email);
+    User findById(String id);
+    User findByEmail(String email);
     void save(User user);
+    void deleteById(String id);
 }

@@ -1,5 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.group;
 
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import org.apache.commons.lang3.Validate;
 
@@ -33,6 +34,13 @@ public class Group {
     public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        Validate.notBlank(name);
+
+        this.name = name;
+    }
+
     public List<String> getUsersIds() {
         return usersIds;
     }
@@ -40,9 +48,25 @@ public class Group {
         return listIds;
     }
 
-    public boolean addUser(User user) {
-        user.getGroupIds().remove(id);
-        return usersIds.add(user.getId());
+    public void addUser(User user) {
+        user.getGroupIds().add(id);
+        usersIds.add(user.getId());
+    }
+
+    public boolean removeUser(User user) {
+        return user.getGroupIds().remove(id) && usersIds.remove(user.getId());
+    }
+
+    public boolean isEmpty() {
+        return usersIds.isEmpty();
+    }
+
+    public void addList(ShoppingList list) {
+        listIds.add(list.getId());
+    }
+
+    public boolean removeList(ShoppingList list) {
+        return listIds.remove(list.getId());
     }
 
     private void validate() {

@@ -25,17 +25,9 @@ public class GroupRepositoryBridge implements GroupRepository {
     }
 
     @Override
-    public Group findGroupById(String id) {
+    public Group findById(String id) {
         var result = repository.findById(id);
-        if (result.isPresent()) {
-            return mapFromRecord.apply(result.get());
-        }
-        return null;
-    }
-
-    @Override
-    public List<Group> findAllGroups() {
-        return repository.findAll().stream().map(mapFromRecord).toList();
+        return result.map(mapFromRecord).orElse(null);
     }
 
     @Override
