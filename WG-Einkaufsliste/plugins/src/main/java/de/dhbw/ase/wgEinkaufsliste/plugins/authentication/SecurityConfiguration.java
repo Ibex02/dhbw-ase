@@ -1,5 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.authentication;
 
+import de.dhbw.ase.wgEinkaufsliste.application.authentication.CustomPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +17,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     private final CustomUserDetailsService userDetailsService;
+    private final PasswordEncoderBridge passwordEncoder;
 
     @Autowired
-    public SecurityConfiguration(CustomUserDetailsService userDetailsService) {
+    public SecurityConfiguration(CustomUserDetailsService userDetailsService, PasswordEncoderBridge passwordEncoder) {
         this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean

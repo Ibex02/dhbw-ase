@@ -1,6 +1,5 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.authentication;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.authentication.mappers.UserToUserDetailsMapper;
 import de.dhbw.ase.wgEinkaufsliste.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
