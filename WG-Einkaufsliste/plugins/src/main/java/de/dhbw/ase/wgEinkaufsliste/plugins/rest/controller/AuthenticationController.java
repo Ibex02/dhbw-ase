@@ -1,9 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.controller;
 
 import de.dhbw.ase.wgEinkaufsliste.application.authentication.UserService;
-import de.dhbw.ase.wgEinkaufsliste.domain.entities.User;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

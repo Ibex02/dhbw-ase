@@ -1,6 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.controller;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingLists.ShoppingListResource;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 

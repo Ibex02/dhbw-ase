@@ -1,10 +1,10 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.persistence.users;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.UserRecord;
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.mappers.UserRecordToUserMapper;
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.mappers.UserToUserRecordMapper;
-import de.dhbw.ase.wgEinkaufsliste.domain.entities.User;
-import de.dhbw.ase.wgEinkaufsliste.domain.repositories.UserRepository;
+import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserRecord;
+import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserRecordToUserMapper;
+import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserToUserRecordMapper;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

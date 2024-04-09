@@ -1,9 +1,9 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.controller;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.groups.GroupResource;
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingLists.ShoppingListResource;
-import de.dhbw.ase.wgEinkaufsliste.application.groups.GroupsApplicationService;
-import de.dhbw.ase.wgEinkaufsliste.domain.entities.Group;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupResource;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListResource;
+import de.dhbw.ase.wgEinkaufsliste.application.group.GroupApplicationService;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +13,10 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "${apiPrefix}/groups")
 public class GroupsController {
-    private final GroupsApplicationService groupsService;
+    private final GroupApplicationService groupsService;
 
     @Autowired
-    public GroupsController(GroupsApplicationService groupsService) {
+    public GroupsController(GroupApplicationService groupsService) {
         this.groupsService = groupsService;
     }
 

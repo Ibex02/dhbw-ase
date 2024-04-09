@@ -1,7 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.application.authentication;
 
-import de.dhbw.ase.wgEinkaufsliste.domain.entities.User;
-import de.dhbw.ase.wgEinkaufsliste.domain.repositories.UserRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

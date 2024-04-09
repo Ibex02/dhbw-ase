@@ -1,6 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.persistence.users;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.UserRecord;
+import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserRecord;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
