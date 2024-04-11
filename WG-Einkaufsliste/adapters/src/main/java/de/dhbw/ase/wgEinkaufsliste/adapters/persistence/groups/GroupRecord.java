@@ -10,17 +10,17 @@ import java.util.List;
 public class GroupRecord {
 
     @Id
-    private String id;
-    private String name;
+    private final String id;
+    private final String name;
 
-    private List<String> users = new ArrayList<>();
-    private List<String> lists = new ArrayList<>();
+    private final List<String> users;
+    private final List<String> shoppingLists;
 
-    public GroupRecord(String id, String name, List<String> users, List<String> lists) {
+    public GroupRecord(String id, String name, List<String> users, List<String> shoppingLists) {
         this.id = id;
         this.name = name;
         this.users = users;
-        this.lists = lists;
+        this.shoppingLists = shoppingLists;
     }
 
     public String getId() {
@@ -35,7 +35,7 @@ public class GroupRecord {
         return users;
     }
 
-    public List<String> getLists() {
-        return lists;
+    public List<String> getShoppingLists() {
+        return shoppingLists;
     }
 }

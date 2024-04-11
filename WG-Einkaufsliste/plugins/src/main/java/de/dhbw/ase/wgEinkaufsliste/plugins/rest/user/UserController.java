@@ -1,11 +1,9 @@
-package de.dhbw.ase.wgEinkaufsliste.plugins.rest.controller;
+package de.dhbw.ase.wgEinkaufsliste.plugins.rest.user;
 
 import de.dhbw.ase.wgEinkaufsliste.application.user.UserApplicationService;
 import de.dhbw.ase.wgEinkaufsliste.plugins.authentication.UserResolver;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "${apiPrefix}/users")
@@ -24,5 +22,12 @@ public class UserController {
         var user = userResolver.getUser(auth);
 
         userService.delete(user);
+    }
+
+    @PutMapping("/name")
+    public void changeName(Authentication auth, @RequestBody String newName) {
+        var user = userResolver.getUser(auth);
+
+        userService.changeName(user, newName);
     }
 }

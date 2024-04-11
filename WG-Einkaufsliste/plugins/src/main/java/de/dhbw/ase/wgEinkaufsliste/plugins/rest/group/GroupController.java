@@ -1,4 +1,4 @@
-package de.dhbw.ase.wgEinkaufsliste.plugins.rest.controller;
+package de.dhbw.ase.wgEinkaufsliste.plugins.rest.group;
 
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupToGroupResourceMapper;
@@ -61,11 +61,11 @@ public class GroupController {
     }
 
     @PostMapping("")
-    public String createGroup(Authentication auth, String name) {
+    public String createGroup(Authentication auth, @RequestBody CreateGroupRequest request) {
 
         User user = userResolver.getUser(auth);
 
-        Group group = groupService.create(user, name);
+        Group group = groupService.create(user, request.name());
         return group.getId();
     }
 
@@ -76,15 +76,15 @@ public class GroupController {
     }
 
     @PutMapping("/{groupId}/name")
-    public void changeName(Authentication auth, @PathVariable String groupId, String newName) {
+    public void changeName(Authentication auth, @PathVariable String groupId, ChangeGroupNameRequest request) {
         var group = groupRepository.findById(groupId);
-        groupService.changeName(group, newName);
+        groupService.changeName(group, request.newName());
     }
 
     @PutMapping("/{groupId}/users")
-    public void addUser(Authentication auth, @PathVariable String groupId, String userId) {
+    public void addUser(Authentication auth, @PathVariable String groupId, AddUserRequest request) {
         var group = groupRepository.findById(groupId);
-        var user = userRepository.findById(userId);
+        var user = userRepository.findById(request.userId());
         groupService.addUser(group, user);
     }
 
@@ -93,17 +93,5 @@ public class GroupController {
         var group = groupRepository.findById(groupId);
         var user = userRepository.findById(userId);
         groupService.removeUser(group, user);
-    }
-
-    @GetMapping("/{groupId}/lists")
-    public List<ShoppingListResource> getLists(Authentication auth, @PathVariable String groupId) {
-        return null;
-    }
-
-    @PostMapping("/{groupId}/lists")
-    public String createList(Authentication auth, @PathVariable String groupId, String name) {
-        var group = groupRepository.findById(groupId);
-        var list = shoppingListService.create(group, name);
-        return list.getId();
     }
 }

@@ -46,4 +46,10 @@ public class UserApplicationService {
 
         userRepository.deleteById(user.getId());
     }
+
+    public void changeName(User user, String newName) {
+        user.setName(newName);
+
+        userRepository.save(user);
+    }
 }

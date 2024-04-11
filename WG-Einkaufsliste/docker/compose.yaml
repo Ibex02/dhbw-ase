@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  # Mongo Database
+  mongodb:
+    image: mongo:latest
+    container_name: wg-einkaufsliste-mongodb
+    restart: unless-stopped
+    ports:
+      - 27017:27017

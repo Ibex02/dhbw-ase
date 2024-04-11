@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class User {
 
-    private String id;
+    private final String id;
     private String email;
     private String passwordHash;
     private String name;
@@ -48,6 +48,12 @@ public class User {
 
     public List<String> getGroupIds() {
         return groupIds;
+    }
+
+    public void setName(String newName) {
+        Validate.notBlank(newName);
+
+        this.name = newName;
     }
 
     private void validate() {
