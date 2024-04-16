@@ -105,6 +105,18 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
+    public Group removeUser(Group group, User user) {
+        group.removeUser(user);
+        userRepository.save(user);
+
+        if (group.isEmpty()) {
+            groupRepository.deleteById(group.getId());
+            return group;
+        }
+
+        return groupRepository.save(group);
+    }
+
     public Group removeUser(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
         var groupOpt = groupRepository.findById(groupId);
         var userOpt = userRepository.findById(userId);
@@ -115,14 +127,6 @@ public class GroupService {
         var group = groupOpt.get();
         var user = userOpt.get();
 
-        group.removeUser(user);
-        userRepository.save(user);
-
-        if (group.isEmpty()) {
-            groupRepository.deleteById(group.getId());
-            return group;
-        }
-
-        return groupRepository.save(group);
+        return removeUser(group, user);
     }
 }
