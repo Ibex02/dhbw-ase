@@ -3,9 +3,11 @@ package de.dhbw.ase.wgEinkaufsliste.application.shoppingList;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,7 +23,7 @@ public class ShoppingListService {
         this.groupRepository = groupRepository;
     }
 
-    public Optional<ShoppingList> getById(String id) {
+    public Optional<ShoppingList> getById(ShoppingListId id) {
         return shoppingListRepository.findById(id);
     }
 
@@ -34,7 +36,7 @@ public class ShoppingListService {
         return list;
     }
 
-    public ShoppingList createById(String groupId, String name) throws GroupNotFoundException {
+    public ShoppingList createById(GroupId groupId, String name) throws GroupNotFoundException {
         var group = groupRepository.findById(groupId);
 
         if (group.isEmpty()) {
@@ -55,11 +57,11 @@ public class ShoppingListService {
         shoppingListRepository.deleteById(list.getId());
     }
 
-    public void deleteById(String shoppingListId) throws ShoppingListNotFoundException {
-        var shoppingList = shoppingListRepository.findById(shoppingListId);
+    public void deleteById(ShoppingListId id) throws ShoppingListNotFoundException {
+        var shoppingList = shoppingListRepository.findById(id);
 
         if (shoppingList.isEmpty()) {
-            throw new ShoppingListNotFoundException(shoppingListId);
+            throw new ShoppingListNotFoundException(id);
         }
 
         delete(shoppingList.get());
@@ -70,11 +72,11 @@ public class ShoppingListService {
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList changeNameById(String shoppingListId, String newName) throws ShoppingListNotFoundException {
-        var shoppingList = shoppingListRepository.findById(shoppingListId);
+    public ShoppingList changeNameById(ShoppingListId id, String newName) throws ShoppingListNotFoundException {
+        var shoppingList = shoppingListRepository.findById(id);
 
         if (shoppingList.isEmpty()) {
-            throw new ShoppingListNotFoundException(shoppingListId);
+            throw new ShoppingListNotFoundException(id);
         }
 
         return changeName(shoppingList.get(), newName);
@@ -85,11 +87,11 @@ public class ShoppingListService {
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList addItemById(String shoppingListId, ShoppingListItem item) throws ShoppingListNotFoundException {
-        var shoppingList = shoppingListRepository.findById(shoppingListId);
+    public ShoppingList addItemById(ShoppingListId id, ShoppingListItem item) throws ShoppingListNotFoundException {
+        var shoppingList = shoppingListRepository.findById(id);
 
         if (shoppingList.isEmpty()) {
-            throw new ShoppingListNotFoundException(shoppingListId);
+            throw new ShoppingListNotFoundException(id);
         }
 
         return addItem(shoppingList.get(), item);
@@ -100,11 +102,11 @@ public class ShoppingListService {
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList deleteItemById(String shoppingListId, String itemId) throws ShoppingListNotFoundException {
-        var shoppingList = shoppingListRepository.findById(shoppingListId);
+    public ShoppingList deleteItemById(ShoppingListId id, String itemId) throws ShoppingListNotFoundException {
+        var shoppingList = shoppingListRepository.findById(id);
 
         if (shoppingList.isEmpty()) {
-            throw new ShoppingListNotFoundException(shoppingListId);
+            throw new ShoppingListNotFoundException(id);
         }
 
         return deleteItem(shoppingList.get(), itemId);

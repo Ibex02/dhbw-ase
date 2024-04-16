@@ -4,6 +4,7 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.shoppingLists.ShoppingLi
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.shoppingLists.ShoppingListToShoppingListRecordMapper;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,8 +28,8 @@ public class ShoppingListRepositoryBridge implements ShoppingListRepository {
     }
 
     @Override
-    public Optional<ShoppingList> findById(String id) {
-        var record = repository.findById(id);
+    public Optional<ShoppingList> findById(ShoppingListId id) {
+        var record = repository.findById(id.value());
         return record.map(mapFromRecord);
     }
 
@@ -41,7 +42,7 @@ public class ShoppingListRepositoryBridge implements ShoppingListRepository {
     }
 
     @Override
-    public void deleteById(String id) {
-        repository.deleteById(id);
+    public void deleteById(ShoppingListId id) {
+        repository.deleteById(id.value());
     }
 }

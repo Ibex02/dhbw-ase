@@ -1,8 +1,10 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.persistence.shoppingLists;
 
+import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
-import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.Price;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Price;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,11 +19,11 @@ public class ShoppingListRecordToShoppingListMapper implements Function<Shopping
     }
 
     private ShoppingList map(ShoppingListRecord record) {
-        return new ShoppingList(record.id(), record.groupId(), record.name(), map(record.items()));
-    }
+        var id = new ShoppingListId(record.id());
+        var groupId = new GroupId(record.groupId());
+        var items = record.items().stream().map(this::map).toList();
 
-    private List<ShoppingListItem> map(List<ShoppingListRecord.ShoppingListRecordItem> items) {
-        return items.stream().map(this::map).toList();
+        return new ShoppingList(id, groupId, record.name(), items);
     }
 
     private ShoppingListItem map(ShoppingListRecord.ShoppingListRecordItem item) {

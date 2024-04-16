@@ -4,6 +4,7 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.GroupRecordToGrou
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.GroupToGroupRecordMapper;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -24,8 +25,8 @@ public class GroupRepositoryBridge implements GroupRepository {
     }
 
     @Override
-    public Optional<Group> findById(String id) {
-        var record = repository.findById(id);
+    public Optional<Group> findById(GroupId id) {
+        var record = repository.findById(id.value());
         return record.map(mapFromRecord);
     }
 
@@ -38,7 +39,7 @@ public class GroupRepositoryBridge implements GroupRepository {
     }
 
     @Override
-    public void deleteById(String id) {
-        repository.deleteById(id);
+    public void deleteById(GroupId id) {
+        repository.deleteById(id.value());
     }
 }

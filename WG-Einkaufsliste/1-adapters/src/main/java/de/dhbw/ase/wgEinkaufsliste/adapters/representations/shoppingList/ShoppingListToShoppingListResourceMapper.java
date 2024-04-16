@@ -2,6 +2,7 @@ package de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,10 @@ public class ShoppingListToShoppingListResourceMapper implements Function<Shoppi
     }
 
     private ShoppingListResource map(ShoppingList list) {
-        return new ShoppingListResource(list.getId(), list.getName(), map(list.getItems()));
+        var id = list.getId().value();
+        var items = map(list.getItems());
+
+        return new ShoppingListResource(id, list.getName(), items);
     }
 
     private List<ShoppingListItemResource> map(List<ShoppingListItem> items) {

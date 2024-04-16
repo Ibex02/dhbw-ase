@@ -4,6 +4,7 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserRecordToUserMap
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserToUserRecordMapper;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -24,8 +25,8 @@ public class UserRepositoryBridge implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(String id) {
-        var record = repository.findById(id);
+    public Optional<User> findById(UserId id) {
+        var record = repository.findById(id.value());
         return record.map(mapFromRecord);
     }
 
@@ -43,7 +44,7 @@ public class UserRepositoryBridge implements UserRepository {
     }
 
     @Override
-    public void deleteById(String id) {
-        repository.deleteById(id);
+    public void deleteById(UserId id) {
+        repository.deleteById(id.value());
     }
 }

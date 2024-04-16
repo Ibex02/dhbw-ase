@@ -1,20 +1,21 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.shoppingList;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public class ShoppingList {
-    private final String id;
-    private final String groupId;
+    private final ShoppingListId id;
+    private final GroupId groupId;
     private String name;
     private List<ShoppingListItem> items = new ArrayList<>();
 
-    public ShoppingList(String id, String groupId, String name, List<ShoppingListItem> items) {
+    public ShoppingList(ShoppingListId id, GroupId groupId, String name, List<ShoppingListItem> items) {
         this.id = id;
         this.groupId = groupId;
         this.name = name;
@@ -25,7 +26,7 @@ public class ShoppingList {
 
     public ShoppingList(Group group, String name) {
 
-        this.id = UUID.randomUUID().toString();
+        this.id = new ShoppingListId();
         this.name = name;
 
         group.addList(this);
@@ -34,7 +35,7 @@ public class ShoppingList {
         validate();
     }
 
-    public String getId() {
+    public ShoppingListId getId() {
         return id;
     }
 
@@ -55,7 +56,7 @@ public class ShoppingList {
         items.removeIf(x -> Objects.equals(x.getId(), itemId));
     }
 
-    public String getGroupId() {
+    public GroupId getGroupId() {
         return groupId;
     }
 
@@ -65,8 +66,8 @@ public class ShoppingList {
 
 
     private void validate() {
-        Validate.notBlank(id);
-        Validate.notBlank(groupId);
+        Validate.notNull(id, "value must not be null!");
+        Validate.notNull(groupId, "groupId must not be null!");
         Validate.notBlank(name);
     }
 }

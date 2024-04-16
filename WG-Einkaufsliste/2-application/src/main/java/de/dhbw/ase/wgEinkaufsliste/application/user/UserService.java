@@ -5,6 +5,7 @@ import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class UserService {
         this.groupService = groupService;
     }
 
-    public Optional<User> getById(String id) {
+    public Optional<User> getById(UserId id) {
         return userRepository.findById(id);
     }
 

@@ -1,20 +1,21 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.user;
 
+import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class User {
 
-    private final String id;
+    private final UserId id;
     private final String email;
     private final String passwordHash;
     private String name;
-    private List<String> groupIds = new ArrayList<>();
+    private List<GroupId> groupIds = new ArrayList<>();
 
-    public User(String id, String email, String passwordHash, String name, List<String> groupIds) {
+    public User(UserId id, String email, String passwordHash, String name, List<GroupId> groupIds) {
         this.id = id;
         this.email = email;
         this.passwordHash = passwordHash;
@@ -25,7 +26,7 @@ public class User {
     }
 
     public User(String email, String passwordHash, String name) {
-        this.id = UUID.randomUUID().toString();
+        this.id = new UserId();
         this.name = name;
         this.passwordHash = passwordHash;
         this.email = email;
@@ -33,7 +34,7 @@ public class User {
         validate();
     }
 
-    public String getId() {
+    public UserId getId() {
         return id;
     }
     public String getEmail() {
@@ -46,7 +47,7 @@ public class User {
         return name;
     }
 
-    public List<String> getGroupIds() {
+    public List<GroupId> getGroupIds() {
         return groupIds;
     }
 
@@ -57,7 +58,7 @@ public class User {
     }
 
     private void validate() {
-        Validate.notBlank(id);
+        Validate.notNull(id, "value must not be null!");
         Validate.notBlank(email);
         Validate.notBlank(name);
         Validate.notBlank(passwordHash);

@@ -6,7 +6,9 @@ import de.dhbw.ase.wgEinkaufsliste.application.authentication.UserContextProvide
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
 import de.dhbw.ase.wgEinkaufsliste.application.user.UserNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.AddUserRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.ChangeGroupNameRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.CreateGroupRequest;
@@ -21,7 +23,6 @@ import java.util.List;
 public class GroupController {
     private final GroupService groupService;
     private final UserContextProvider context;
-
     private final GroupToGroupResourceMapper mapToResource;
 
     @Autowired
@@ -31,9 +32,9 @@ public class GroupController {
         this.mapToResource = mapToResource;
     }
 
-    @GetMapping("/{groupId}")
-    public ResponseEntity<GroupResource> getGroup(@PathVariable String groupId) {
-        return groupService.getById(groupId)
+    @GetMapping("/{id}")
+    public ResponseEntity<GroupResource> getGroup(@PathVariable String id) {
+        return groupService.getById(new GroupId(id))
                 .map(mapToResource).map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -57,15 +58,15 @@ public class GroupController {
         return ResponseEntity.ok(resource);
     }
 
-    @DeleteMapping("/{groupId}")
-    public void deleteGroup(@PathVariable String groupId) {
-        groupService.deleteById(groupId);
+    @DeleteMapping("/{id}")
+    public void deleteGroup(@PathVariable String id) {
+        groupService.deleteById(new GroupId(id));
     }
 
-    @PutMapping("/{groupId}/name")
-    public ResponseEntity<GroupResource> changeName(@PathVariable String groupId, ChangeGroupNameRequest request) {
+    @PutMapping("/{id}/name")
+    public ResponseEntity<GroupResource> changeName(@PathVariable String id, ChangeGroupNameRequest request) {
         try {
-            var group = groupService.changeNameById(groupId, request.newName());
+            var group = groupService.changeNameById(new GroupId(id), request.newName());
             var resource = mapToResource.apply(group);
 
             return ResponseEntity.ok(resource);
@@ -74,10 +75,10 @@ public class GroupController {
         }
     }
 
-    @PutMapping("/{groupId}/users")
-    public ResponseEntity<GroupResource> addUser(@PathVariable String groupId, AddUserRequest request) {
+    @PutMapping("/{id}/users")
+    public ResponseEntity<GroupResource> addUser(@PathVariable String id, AddUserRequest request) {
         try {
-            var group = groupService.addUserById(groupId, request.userId());
+            var group = groupService.addUserById(new GroupId(id), new UserId(request.userId()));
             var resource = mapToResource.apply(group);
 
             return ResponseEntity.ok(resource);
@@ -86,10 +87,10 @@ public class GroupController {
         }
     }
 
-    @DeleteMapping("/{groupId}/users/{userId}")
-    public ResponseEntity<GroupResource> removeUser(@PathVariable String groupId, @PathVariable String userId) {
+    @DeleteMapping("/{id}/users/{userId}")
+    public ResponseEntity<GroupResource> removeUser(@PathVariable String id, @PathVariable String userId) {
         try {
-            var group = groupService.addUserById(groupId, userId);
+            var group = groupService.removeUserById(new GroupId(id), new UserId(userId));
             var resource = mapToResource.apply(group);
 
             return ResponseEntity.ok(resource);

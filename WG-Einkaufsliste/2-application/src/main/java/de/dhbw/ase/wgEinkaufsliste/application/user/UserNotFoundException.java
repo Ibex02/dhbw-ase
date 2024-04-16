@@ -1,16 +1,18 @@
 package de.dhbw.ase.wgEinkaufsliste.application.user;
 
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
+
 public class UserNotFoundException extends Exception {
 
-    private final String userId;
+    private final UserId id;
 
-    public UserNotFoundException(String groupId) {
-        super("No group for id: " + groupId + " found");
+    public UserNotFoundException(UserId id) {
+        super("No user for value: " + id + " found");
 
-        this.userId = groupId;
+        this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public UserId getId() {
+        return id;
     }
 }

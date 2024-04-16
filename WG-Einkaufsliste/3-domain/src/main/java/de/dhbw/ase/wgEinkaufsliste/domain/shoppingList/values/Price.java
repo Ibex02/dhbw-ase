@@ -1,4 +1,4 @@
-package de.dhbw.ase.wgEinkaufsliste.domain.shoppingList;
+package de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values;
 
 import org.apache.commons.lang3.Validate;
 

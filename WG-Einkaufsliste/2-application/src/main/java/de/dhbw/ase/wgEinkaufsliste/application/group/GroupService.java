@@ -3,9 +3,11 @@ package de.dhbw.ase.wgEinkaufsliste.application.group;
 import de.dhbw.ase.wgEinkaufsliste.application.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,7 @@ public class GroupService {
         this.shoppingListRepository = shoppingListRepository;
     }
 
-    public Optional<Group> getById(String id) {
+    public Optional<Group> getById(GroupId id) {
         return groupRepository.findById(id);
     }
 
@@ -56,7 +58,7 @@ public class GroupService {
     }
 
     public void delete(Group group) {
-        for (String userId : group.getUsersIds().stream().toList()) {
+        for (var userId : group.getUsersIds().stream().toList()) {
             var user = userRepository.findById(userId);
 
             if (user.isPresent()) {
@@ -65,14 +67,14 @@ public class GroupService {
             }
         }
 
-        for (String listId : group.getListIds()) {
+        for (var listId : group.getListIds()) {
             shoppingListRepository.deleteById(listId);
         }
 
         groupRepository.deleteById(group.getId());
     }
 
-    public void deleteById(String id) {
+    public void deleteById(GroupId id) {
         var group = groupRepository.findById(id);
         group.ifPresent(this::delete);
     }
@@ -82,11 +84,11 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
-    public Group changeNameById(String groupId, String newName) throws GroupNotFoundException {
-        var group = groupRepository.findById(groupId);
+    public Group changeNameById(GroupId id, String newName) throws GroupNotFoundException {
+        var group = groupRepository.findById(id);
 
         if (group.isEmpty()) {
-            throw new GroupNotFoundException(groupId);
+            throw new GroupNotFoundException(id);
         }
 
         return changeName(group.get(), newName);
@@ -99,7 +101,7 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
-    public Group addUserById(String groupId, String userId) throws GroupNotFoundException, UserNotFoundException {
+    public Group addUserById(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
         var group = groupRepository.findById(groupId);
         var user = userRepository.findById(userId);
 
@@ -126,7 +128,7 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
-    public Group removeUserById(String groupId, String userId) throws GroupNotFoundException, UserNotFoundException {
+    public Group removeUserById(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
         var group = groupRepository.findById(groupId);
         var user = userRepository.findById(userId);
 

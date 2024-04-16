@@ -1,34 +1,36 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.group;
 
+import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Group {
 
-    private String id;
+    private final GroupId id;
     private String name;
 
-    private List<String> usersIds = new ArrayList<>();
-    private List<String> listIds = new ArrayList<>();
+    private List<UserId> usersIds = new ArrayList<>();
+    private List<ShoppingListId> listIds = new ArrayList<>();
 
     public Group(String name) {
-        this.id = UUID.randomUUID().toString();
+        this.id = new GroupId();
         this.name = name;
     }
 
-    public Group(String id, String name, List<String> usersIds, List<String> listIds) {
+    public Group(GroupId id, String name, List<UserId> usersIds, List<ShoppingListId> listIds) {
         this.id = id;
         this.name = name;
         this.usersIds = usersIds;
         this.listIds = listIds;
     }
 
-    public String getId() {
+    public GroupId getId() {
         return id;
     }
     public String getName() {
@@ -41,10 +43,10 @@ public class Group {
         this.name = name;
     }
 
-    public List<String> getUsersIds() {
+    public List<UserId> getUsersIds() {
         return usersIds;
     }
-    public List<String> getListIds() {
+    public List<ShoppingListId> getListIds() {
         return listIds;
     }
 
@@ -71,7 +73,6 @@ public class Group {
 
     private void validate() {
         Validate.notBlank(name);
-        Validate.notBlank(id);
         Validate.notEmpty(usersIds);
     }
 }

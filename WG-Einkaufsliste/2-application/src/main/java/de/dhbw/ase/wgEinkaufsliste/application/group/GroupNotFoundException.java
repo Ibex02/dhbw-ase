@@ -1,16 +1,18 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
+import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
+
 public class GroupNotFoundException extends Exception {
 
-    private final String groupId;
+    private final GroupId id;
 
-    public GroupNotFoundException(String groupId) {
-        super("No group for id: " + groupId + " found");
+    public GroupNotFoundException(GroupId id) {
+        super("No group for value: " + id + " found");
 
-        this.groupId = groupId;
+        this.id = id;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public GroupId getId() {
+        return id;
     }
 }

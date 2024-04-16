@@ -1,7 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
-import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.Price;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Price;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;

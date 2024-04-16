@@ -1,15 +1,17 @@
 package de.dhbw.ase.wgEinkaufsliste.application.shoppingList;
 
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
+
 public class ShoppingListNotFoundException extends Exception {
-    private final String listId;
+    private final ShoppingListId id;
 
-    public ShoppingListNotFoundException(String listId) {
-        super("No group for id: " + listId + " found");
+    public ShoppingListNotFoundException(ShoppingListId id) {
+        super("No list for value: " + id + " found");
 
-        this.listId = listId;
+        this.id = id;
     }
 
-    public String getListId() {
-        return listId;
+    public ShoppingListId getId() {
+        return id;
     }
 }

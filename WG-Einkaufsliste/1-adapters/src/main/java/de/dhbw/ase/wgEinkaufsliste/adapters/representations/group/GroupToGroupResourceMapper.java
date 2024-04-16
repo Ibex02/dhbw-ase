@@ -3,7 +3,9 @@ package de.dhbw.ase.wgEinkaufsliste.adapters.representations.group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,22 +32,27 @@ public class GroupToGroupResourceMapper implements Function<Group, GroupResource
     }
 
     private GroupResource map(Group group) {
-        return new GroupResource(group.getId(), group.getName(), mapUsers(group.getUsersIds()), mapLists(group.getListIds()));
+        var id = group.getId().value();
+        var users = mapUsers(group.getUsersIds());
+        var shoppingLists = mapLists(group.getListIds());
+
+        return new GroupResource(id, group.getName(), users, shoppingLists);
     }
 
-    private List<GroupResource.GroupResourceUser> mapUsers(List<String> lists) {
+    private List<GroupResource.GroupResourceUser> mapUsers(List<UserId> lists) {
         return lists.stream().map(userRepository::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 
     private GroupResource.GroupResourceUser map(User user) {
-        return new GroupResource.GroupResourceUser(user.getId(), user.getName());
+        return new GroupResource.GroupResourceUser(user.getId().value(), user.getName());
     }
 
-    private List<GroupResource.GroupResourceList> mapLists(List<String> lists) {
+    private List<GroupResource.GroupResourceList> mapLists(List<ShoppingListId> lists) {
         return lists.stream().map(shoppingListRepository::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 
     private GroupResource.GroupResourceList map(ShoppingList list) {
-        return new GroupResource.GroupResourceList(list.getId(), list.getName());
+        var id = list.getId().value();
+        return new GroupResource.GroupResourceList(id, list.getName());
     }
 }
