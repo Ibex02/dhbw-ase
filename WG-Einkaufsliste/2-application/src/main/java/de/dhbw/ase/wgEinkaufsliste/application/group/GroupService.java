@@ -57,7 +57,12 @@ public class GroupService {
         return group;
     }
 
-    public void delete(Group group) {
+    public void delete(GroupId id) throws GroupNotFoundException {
+        var groupOpt = groupRepository.findById(id);
+
+        if (groupOpt.isEmpty()) throw new GroupNotFoundException(id);
+        var group = groupOpt.get();
+
         for (var userId : group.getUsersIds().stream().toList()) {
             var user = userRepository.findById(userId);
 
@@ -74,54 +79,43 @@ public class GroupService {
         groupRepository.deleteById(group.getId());
     }
 
-    public void delete(GroupId id) throws GroupNotFoundException {
-        var group = groupRepository.findById(id);
-        if (group.isEmpty()) {
-            throw new GroupNotFoundException(id);
-        }
+    public Group changeName(GroupId id, String newName) throws GroupNotFoundException {
+        var groupOpt = groupRepository.findById(id);
 
-        delete(group.get());
-    }
+        if (groupOpt.isEmpty()) throw new GroupNotFoundException(id);
+        var group = groupOpt.get();
 
-    public Group changeName(Group group, String newName) {
         group.setName(newName);
         return groupRepository.save(group);
     }
 
-    public Group changeName(GroupId id, String newName) throws GroupNotFoundException {
-        var group = groupRepository.findById(id);
+    public Group addUser(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
+        var groupOpt = groupRepository.findById(groupId);
+        var userOpt = userRepository.findById(userId);
 
-        if (group.isEmpty()) {
-            throw new GroupNotFoundException(id);
-        }
+        if (groupOpt.isEmpty()) throw new GroupNotFoundException(groupId);
+        if (userOpt.isEmpty()) throw new UserNotFoundException(userId);
 
-        return changeName(group.get(), newName);
-    }
+        var group = groupOpt.get();
+        var user = userOpt.get();
 
-    public Group addUser(Group group, User user) {
         group.addUser(user);
 
         userRepository.save(user);
         return groupRepository.save(group);
     }
 
-    public Group addUser(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
-        var group = groupRepository.findById(groupId);
-        var user = userRepository.findById(userId);
+    public Group removeUser(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
+        var groupOpt = groupRepository.findById(groupId);
+        var userOpt = userRepository.findById(userId);
 
-        if (group.isEmpty()) {
-            throw new GroupNotFoundException(groupId);
-        }
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(userId);
-        }
+        if (groupOpt.isEmpty()) throw new GroupNotFoundException(groupId);
+        if (userOpt.isEmpty()) throw new UserNotFoundException(userId);
 
-        return addUser(group.get(), user.get());
-    }
+        var group = groupOpt.get();
+        var user = userOpt.get();
 
-    public Group removeUser(Group group, User user) {
         group.removeUser(user);
-
         userRepository.save(user);
 
         if (group.isEmpty()) {
@@ -130,19 +124,5 @@ public class GroupService {
         }
 
         return groupRepository.save(group);
-    }
-
-    public Group removeUser(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
-        var group = groupRepository.findById(groupId);
-        var user = userRepository.findById(userId);
-
-        if (group.isEmpty()) {
-            throw new GroupNotFoundException(groupId);
-        }
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(userId);
-        }
-
-        return removeUser(group.get(), user.get());
     }
 }
