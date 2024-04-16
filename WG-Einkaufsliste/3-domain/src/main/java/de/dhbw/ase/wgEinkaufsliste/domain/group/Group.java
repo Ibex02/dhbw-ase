@@ -21,6 +21,8 @@ public class Group {
     public Group(String name) {
         this.id = new GroupId();
         this.name = name;
+
+        validate();
     }
 
     public Group(GroupId id, String name, List<UserId> usersIds, List<ShoppingListId> listIds) {
@@ -28,6 +30,8 @@ public class Group {
         this.name = name;
         this.usersIds = usersIds;
         this.listIds = listIds;
+
+        validate();
     }
 
     public GroupId getId() {
@@ -51,12 +55,17 @@ public class Group {
     }
 
     public void addUser(User user) {
-        user.getGroupIds().add(id);
-        usersIds.add(user.getId());
+        var userGroupIds = user.getGroupIds();
+        if (!userGroupIds.contains(id)) {
+            user.getGroupIds().add(id);
+        }
+        if (!usersIds.contains(user.getId())) {
+            usersIds.add(user.getId());
+        }
     }
 
     public boolean removeUser(User user) {
-        return user.getGroupIds().remove(id) && usersIds.remove(user.getId());
+        return user.getGroupIds().remove(id) & usersIds.remove(user.getId());
     }
 
     public boolean isEmpty() {
@@ -64,7 +73,9 @@ public class Group {
     }
 
     public void addList(ShoppingList list) {
-        listIds.add(list.getId());
+        if (!listIds.contains(list.getId())) {
+            listIds.add(list.getId());
+        }
     }
 
     public boolean removeList(ShoppingList list) {
@@ -72,7 +83,9 @@ public class Group {
     }
 
     private void validate() {
+        Validate.notNull(id, "");
         Validate.notBlank(name);
         Validate.notEmpty(usersIds);
+        Validate.notNull(listIds, "");
     }
 }

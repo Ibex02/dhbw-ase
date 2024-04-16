@@ -96,7 +96,7 @@ public class ShoppingListController {
     public ResponseEntity<ShoppingListResource> addItem(@PathVariable String id, @RequestBody ShoppingListItemResource item) {
         try {
             var listItem = mapItemFromResource.apply(item);
-            var shoppingList = shoppingListService.addItem(new ShoppingListId(id), listItem);
+            var shoppingList = shoppingListService.addOrUpdate(new ShoppingListId(id), listItem);
             var resource = mapToResource.apply(shoppingList);
 
             return ResponseEntity.ok(resource);

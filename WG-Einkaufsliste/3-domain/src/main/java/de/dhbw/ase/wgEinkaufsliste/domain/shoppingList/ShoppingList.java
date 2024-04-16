@@ -48,12 +48,13 @@ public class ShoppingList {
         this.name = name;
     }
 
-    public void addItem(ShoppingListItem item) {
+    public void addOrUpdateItem(ShoppingListItem item) {
+        removeItemById(item.id());
         items.add(item);
     }
 
     public void removeItemById(ShoppingListItemId itemId) {
-        items.removeIf(x -> x.getId().equals(itemId));
+        items.removeIf(x -> x.id().equals(itemId));
     }
 
     public GroupId getGroupId() {

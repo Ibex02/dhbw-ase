@@ -2,6 +2,7 @@ package de.dhbw.ase.wgEinkaufsliste.adapters.persistence.shoppingLists;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Quantity;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -23,9 +24,10 @@ public class ShoppingListToShoppingListRecordMapper implements Function<Shopping
     }
 
     private ShoppingListRecord.ShoppingListRecordItem map(ShoppingListItem item) {
-        var price = item.getPrice().value();
-        var id = item.getId().value();
+        var id = item.id().value();
+        var quantity = item.quantity().value();
+        var price = item.price().value();
 
-        return new ShoppingListRecord.ShoppingListRecordItem(id, item.getName(), item.getAmount(), price);
+        return new ShoppingListRecord.ShoppingListRecordItem(id, item.name(), quantity, price);
     }
 }

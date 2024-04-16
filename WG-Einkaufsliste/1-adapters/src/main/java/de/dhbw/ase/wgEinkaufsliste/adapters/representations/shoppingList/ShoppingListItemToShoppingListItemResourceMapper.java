@@ -1,7 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
-import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Quantity;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -15,9 +15,10 @@ public class ShoppingListItemToShoppingListItemResourceMapper implements Functio
     }
 
     private ShoppingListItemResource map(ShoppingListItem item) {
-        var id = item.getId().value();
-        var price = item.getPrice().value();
+        var id = item.id().value();
+        var quantity = item.quantity().value();
+        var price = item.price().value();
 
-        return new ShoppingListItemResource(id, item.getName(), item.getAmount(), price);
+        return new ShoppingListItemResource(id, item.name(), quantity, price);
     }
 }

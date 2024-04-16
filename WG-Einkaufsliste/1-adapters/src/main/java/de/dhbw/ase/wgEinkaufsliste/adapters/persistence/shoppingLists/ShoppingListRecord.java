@@ -7,5 +7,5 @@ import java.util.List;
 
 @Document("shopping-items")
 public record ShoppingListRecord(@Id String id, String groupId, String name, List<ShoppingListRecordItem> items) {
-    public record ShoppingListRecordItem(String id, String name, int amount, double price) { }
+    public record ShoppingListRecordItem(String id, String name, int quantity, double price) { }
 }

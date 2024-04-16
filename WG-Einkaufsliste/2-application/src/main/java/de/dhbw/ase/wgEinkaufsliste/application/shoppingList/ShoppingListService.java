@@ -82,13 +82,13 @@ public class ShoppingListService {
     }
 
     public void delete(ShoppingListId id) throws ShoppingListNotFoundException {
-        var shoppingList = shoppingListRepository.findById(id);
+        var list = shoppingListRepository.findById(id);
 
-        if (shoppingList.isEmpty()) {
+        if (list.isEmpty()) {
             throw new ShoppingListNotFoundException(id);
         }
 
-        delete(shoppingList.get());
+        delete(list.get());
     }
 
     public ShoppingList changeName(ShoppingList list, String newName) {
@@ -97,28 +97,28 @@ public class ShoppingListService {
     }
 
     public ShoppingList changeName(ShoppingListId id, String newName) throws ShoppingListNotFoundException {
-        var shoppingList = shoppingListRepository.findById(id);
+        var list = shoppingListRepository.findById(id);
 
-        if (shoppingList.isEmpty()) {
+        if (list.isEmpty()) {
             throw new ShoppingListNotFoundException(id);
         }
 
-        return changeName(shoppingList.get(), newName);
+        return changeName(list.get(), newName);
     }
 
-    public ShoppingList addItem(ShoppingList list, ShoppingListItem item) {
-        list.addItem(item);
+    public ShoppingList addOrUpdate(ShoppingList list, ShoppingListItem item) {
+        list.addOrUpdateItem(item);
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList addItem(ShoppingListId id, ShoppingListItem item) throws ShoppingListNotFoundException {
-        var shoppingList = shoppingListRepository.findById(id);
+    public ShoppingList addOrUpdate(ShoppingListId id, ShoppingListItem item) throws ShoppingListNotFoundException {
+        var listOptional = shoppingListRepository.findById(id);
 
-        if (shoppingList.isEmpty()) {
+        if (listOptional.isEmpty()) {
             throw new ShoppingListNotFoundException(id);
         }
 
-        return addItem(shoppingList.get(), item);
+        return addOrUpdate(listOptional.get(), item);
     }
 
     public ShoppingList deleteItem(ShoppingList list, ShoppingListItemId itemId) {
@@ -127,12 +127,12 @@ public class ShoppingListService {
     }
 
     public ShoppingList deleteItem(ShoppingListId id, ShoppingListItemId itemId) throws ShoppingListNotFoundException {
-        var shoppingList = shoppingListRepository.findById(id);
+        var list = shoppingListRepository.findById(id);
 
-        if (shoppingList.isEmpty()) {
+        if (list.isEmpty()) {
             throw new ShoppingListNotFoundException(id);
         }
 
-        return deleteItem(shoppingList.get(), itemId);
+        return deleteItem(list.get(), itemId);
     }
 }

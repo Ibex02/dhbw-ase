@@ -36,9 +36,14 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User create(String email, String password) {
+    public User create(String email, String password, String name) throws UserAlreadyExistsException {
+        var existingUser = userRepository.findByEmail(email);
+        if (existingUser.isPresent()) {
+            throw new UserAlreadyExistsException(email);
+        }
+
         String encoded = encoder.encode(password);
-        var user = new User(email, encoded, "test");
+        var user = new User(email, encoded, name);
 
         userRepository.save(user);
         return user;

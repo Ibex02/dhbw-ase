@@ -4,11 +4,11 @@ import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Price;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Quantity;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.function.Function;
 
 @Component
@@ -31,6 +31,7 @@ public class ShoppingListRecordToShoppingListMapper implements Function<Shopping
         var id = new ShoppingListItemId(item.id());
         var price = new Price(item.price());
 
-        return new ShoppingListItem(id, item.name(), item.amount(), price);
+        var quantity = new Quantity(item.quantity());
+        return new ShoppingListItem(id, item.name(), quantity, price);
     }
 }
