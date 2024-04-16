@@ -1,12 +1,12 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.representations.group;
 
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
+import de.dhbw.ase.wgEinkaufsliste.application.user.UserService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
-import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +17,13 @@ import java.util.function.Function;
 @Component
 public class GroupToGroupResourceMapper implements Function<Group, GroupResource> {
 
-    private final UserRepository userRepository;
-    private final ShoppingListRepository shoppingListRepository;
+    private final UserService userService;
+    private final ShoppingListService shoppingListService;
 
     @Autowired
-    public GroupToGroupResourceMapper(UserRepository userRepository, ShoppingListRepository shoppingListRepository) {
-        this.userRepository = userRepository;
-        this.shoppingListRepository = shoppingListRepository;
+    public GroupToGroupResourceMapper(UserService userService, ShoppingListService shoppingListService) {
+        this.userService = userService;
+        this.shoppingListService = shoppingListService;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class GroupToGroupResourceMapper implements Function<Group, GroupResource
     }
 
     private List<GroupResource.GroupResourceUser> mapUsers(List<UserId> lists) {
-        return lists.stream().map(userRepository::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
+        return lists.stream().map(userService::getById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 
     private GroupResource.GroupResourceUser map(User user) {
@@ -48,7 +48,7 @@ public class GroupToGroupResourceMapper implements Function<Group, GroupResource
     }
 
     private List<GroupResource.GroupResourceList> mapLists(List<ShoppingListId> lists) {
-        return lists.stream().map(shoppingListRepository::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
+        return lists.stream().map(shoppingListService::getById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 
     private GroupResource.GroupResourceList map(ShoppingList list) {

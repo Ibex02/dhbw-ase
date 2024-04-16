@@ -1,6 +1,5 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.shoppingList;
 
-
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Quantity;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Price;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;

@@ -28,6 +28,10 @@ public class UserService {
         this.groupService = groupService;
     }
 
+    public Optional<User> getById(UserId id) {
+        return userRepository.findById(id);
+    }
+
     public Optional<User> getByEmail(String email) {
         return userRepository.findByEmail(email);
     }
