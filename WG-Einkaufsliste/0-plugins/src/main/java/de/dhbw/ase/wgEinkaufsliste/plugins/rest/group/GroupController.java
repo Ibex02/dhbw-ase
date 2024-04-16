@@ -12,7 +12,11 @@ import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.AddUserRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.ChangeGroupNameRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.CreateGroupRequest;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +37,8 @@ public class GroupController {
     }
 
     @GetMapping("/{id}")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<GroupResource> getGroup(@PathVariable String id) {
         return groupService.getById(new GroupId(id))
                 .map(mapToResource).map(ResponseEntity::ok)
@@ -40,6 +46,7 @@ public class GroupController {
     }
 
     @GetMapping("")
+    @ApiResponse(responseCode = "200")
     public ResponseEntity<List<GroupResource>> getAllGroups() {
 
         User user = context.getUser();
@@ -49,6 +56,7 @@ public class GroupController {
     }
 
     @PostMapping("")
+    @ApiResponse(responseCode = "200")
     public ResponseEntity<GroupResource> createGroup(@RequestBody CreateGroupRequest request) {
 
         var user = context.getUser();
@@ -59,14 +67,23 @@ public class GroupController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteGroup(@PathVariable String id) {
-        groupService.deleteById(new GroupId(id));
+    @ApiResponse(responseCode = "200", content = @Content)
+    @ApiResponse(responseCode = "404", content = @Content)
+    public HttpStatusCode deleteGroup(@PathVariable String id) {
+        try {
+            groupService.delete(new GroupId(id));
+            return HttpStatus.OK;
+        } catch (GroupNotFoundException e) {
+            return HttpStatus.NOT_FOUND;
+        }
     }
 
     @PutMapping("/{id}/name")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<GroupResource> changeName(@PathVariable String id, ChangeGroupNameRequest request) {
         try {
-            var group = groupService.changeNameById(new GroupId(id), request.newName());
+            var group = groupService.changeName(new GroupId(id), request.newName());
             var resource = mapToResource.apply(group);
 
             return ResponseEntity.ok(resource);
@@ -76,9 +93,11 @@ public class GroupController {
     }
 
     @PutMapping("/{id}/users")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<GroupResource> addUser(@PathVariable String id, AddUserRequest request) {
         try {
-            var group = groupService.addUserById(new GroupId(id), new UserId(request.userId()));
+            var group = groupService.addUser(new GroupId(id), new UserId(request.userId()));
             var resource = mapToResource.apply(group);
 
             return ResponseEntity.ok(resource);
@@ -88,9 +107,11 @@ public class GroupController {
     }
 
     @DeleteMapping("/{id}/users/{userId}")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<GroupResource> removeUser(@PathVariable String id, @PathVariable String userId) {
         try {
-            var group = groupService.removeUserById(new GroupId(id), new UserId(userId));
+            var group = groupService.removeUser(new GroupId(id), new UserId(userId));
             var resource = mapToResource.apply(group);
 
             return ResponseEntity.ok(resource);

@@ -74,9 +74,13 @@ public class GroupService {
         groupRepository.deleteById(group.getId());
     }
 
-    public void deleteById(GroupId id) {
+    public void delete(GroupId id) throws GroupNotFoundException {
         var group = groupRepository.findById(id);
-        group.ifPresent(this::delete);
+        if (group.isEmpty()) {
+            throw new GroupNotFoundException(id);
+        }
+
+        delete(group.get());
     }
 
     public Group changeName(Group group, String newName) {
@@ -84,7 +88,7 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
-    public Group changeNameById(GroupId id, String newName) throws GroupNotFoundException {
+    public Group changeName(GroupId id, String newName) throws GroupNotFoundException {
         var group = groupRepository.findById(id);
 
         if (group.isEmpty()) {
@@ -101,7 +105,7 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
-    public Group addUserById(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
+    public Group addUser(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
         var group = groupRepository.findById(groupId);
         var user = userRepository.findById(userId);
 
@@ -128,7 +132,7 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
-    public Group removeUserById(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
+    public Group removeUser(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
         var group = groupRepository.findById(groupId);
         var user = userRepository.findById(userId);
 

@@ -2,6 +2,7 @@ package de.dhbw.ase.wgEinkaufsliste.domain.user;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
+import de.dhbw.ase.wgEinkaufsliste.domain.validator.EmailValidator;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
@@ -58,9 +59,13 @@ public class User {
     }
 
     private void validate() {
-        Validate.notNull(id, "value must not be null!");
+        Validate.notNull(id, "");
+        Validate.notNull(groupIds, "");
         Validate.notBlank(email);
         Validate.notBlank(name);
         Validate.notBlank(passwordHash);
+
+        var emailValidator = EmailValidator.getInstance();
+        Validate.isTrue(emailValidator.isValidEmailAddress(email));
     }
 }

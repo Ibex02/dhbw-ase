@@ -9,9 +9,14 @@ import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListNotFound
 import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.ChangeShoppingListNameRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.CreateShoppingListRequest;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,14 +41,25 @@ public class ShoppingListController {
     }
 
     @GetMapping("")
-    public List<ShoppingListResource> getLists(@RequestParam String groupId) {
-        return null;
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "400", content = @Content)
+    public ResponseEntity<List<ShoppingListResource>> getLists(@RequestParam String groupId) {
+        try {
+            var lists = shoppingListService.getAll(new GroupId(groupId));
+            var resources = lists.stream().map(mapToResource).toList();
+
+            return ResponseEntity.ok(resources);
+        } catch (GroupNotFoundException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "404")
     public ResponseEntity<ShoppingListResource> createList(CreateShoppingListRequest request) {
         try {
-            var shoppingList = shoppingListService.createById(new GroupId(request.groupId()), request.name());
+            var shoppingList = shoppingListService.create(new GroupId(request.groupId()), request.name());
             var resource = mapToResource.apply(shoppingList);
 
             return ResponseEntity.ok(resource);
@@ -53,6 +69,8 @@ public class ShoppingListController {
     }
 
     @GetMapping("/{id}")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "404")
     public ResponseEntity<ShoppingListResource> get(@PathVariable String id) {
         return shoppingListService.getById(new ShoppingListId(id))
                 .map(mapToResource).map(ResponseEntity::ok)
@@ -60,19 +78,25 @@ public class ShoppingListController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
+    @ApiResponse(responseCode = "200", content = @Content)
+    @ApiResponse(responseCode = "404", content = @Content)
+    public HttpStatusCode delete(@PathVariable String id) {
         try {
-            shoppingListService.deleteById(new ShoppingListId(id));
+            shoppingListService.delete(new ShoppingListId(id));
+
+            return HttpStatus.OK;
         } catch (ShoppingListNotFoundException e) {
-            throw new RuntimeException(e);
+            return HttpStatus.NOT_FOUND;
         }
     }
 
     @PostMapping("/{id}/items")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<ShoppingListResource> addItem(@PathVariable String id, @RequestBody ShoppingListItemResource item) {
         try {
             var listItem = mapItemFromResource.apply(item);
-            var shoppingList = shoppingListService.addItemById(new ShoppingListId(id), listItem);
+            var shoppingList = shoppingListService.addItem(new ShoppingListId(id), listItem);
             var resource = mapToResource.apply(shoppingList);
 
             return ResponseEntity.ok(resource);
@@ -81,15 +105,12 @@ public class ShoppingListController {
         }
     }
 
-//    @PutMapping("/{listId}/items/{itemId}")
-//    public void modifyItem(@PathVariable String listId, @PathVariable String itemId) {
-//
-//    }
-
     @DeleteMapping("/{id}/items/{itemId}")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<ShoppingListResource> deleteItem(@PathVariable String id, @PathVariable String itemId) {
         try {
-            var shoppingList = shoppingListService.deleteItemById(new ShoppingListId(id), itemId);
+            var shoppingList = shoppingListService.deleteItem(new ShoppingListId(id), new ShoppingListItemId(itemId));
             var resource = mapToResource.apply(shoppingList);
 
             return ResponseEntity.ok(resource);
@@ -99,9 +120,11 @@ public class ShoppingListController {
     }
 
     @PutMapping("/{id}/name")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<ShoppingListResource> changeName(@PathVariable String id, @RequestBody ChangeShoppingListNameRequest request) {
         try {
-            var shoppingList = shoppingListService.changeNameById(new ShoppingListId(id), request.newName());
+            var shoppingList = shoppingListService.changeName(new ShoppingListId(id), request.newName());
             var resource = mapToResource.apply(shoppingList);
 
             return ResponseEntity.ok(resource);

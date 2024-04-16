@@ -8,8 +8,11 @@ import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +30,27 @@ public class ShoppingListService {
         return shoppingListRepository.findById(id);
     }
 
+    public List<ShoppingList> getAll(Group group) {
+        var result = new ArrayList<ShoppingList>();
+
+        for (var listId : group.getListIds()) {
+            var list = shoppingListRepository.findById(listId);
+            list.ifPresent(result::add);
+        }
+
+        return result;
+    }
+
+    public List<ShoppingList> getAll(GroupId groupId) throws GroupNotFoundException {
+        var group = groupRepository.findById(groupId);
+
+        if (group.isEmpty()) {
+            throw new GroupNotFoundException(groupId);
+        }
+
+        return getAll(group.get());
+    }
+
     public ShoppingList create(Group group, String name) {
         var list = new ShoppingList(group, name);
 
@@ -36,7 +60,7 @@ public class ShoppingListService {
         return list;
     }
 
-    public ShoppingList createById(GroupId groupId, String name) throws GroupNotFoundException {
+    public ShoppingList create(GroupId groupId, String name) throws GroupNotFoundException {
         var group = groupRepository.findById(groupId);
 
         if (group.isEmpty()) {
@@ -57,7 +81,7 @@ public class ShoppingListService {
         shoppingListRepository.deleteById(list.getId());
     }
 
-    public void deleteById(ShoppingListId id) throws ShoppingListNotFoundException {
+    public void delete(ShoppingListId id) throws ShoppingListNotFoundException {
         var shoppingList = shoppingListRepository.findById(id);
 
         if (shoppingList.isEmpty()) {
@@ -72,7 +96,7 @@ public class ShoppingListService {
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList changeNameById(ShoppingListId id, String newName) throws ShoppingListNotFoundException {
+    public ShoppingList changeName(ShoppingListId id, String newName) throws ShoppingListNotFoundException {
         var shoppingList = shoppingListRepository.findById(id);
 
         if (shoppingList.isEmpty()) {
@@ -87,7 +111,7 @@ public class ShoppingListService {
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList addItemById(ShoppingListId id, ShoppingListItem item) throws ShoppingListNotFoundException {
+    public ShoppingList addItem(ShoppingListId id, ShoppingListItem item) throws ShoppingListNotFoundException {
         var shoppingList = shoppingListRepository.findById(id);
 
         if (shoppingList.isEmpty()) {
@@ -97,12 +121,12 @@ public class ShoppingListService {
         return addItem(shoppingList.get(), item);
     }
 
-    public ShoppingList deleteItem(ShoppingList list, String itemId) {
+    public ShoppingList deleteItem(ShoppingList list, ShoppingListItemId itemId) {
         list.removeItemById(itemId);
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList deleteItemById(ShoppingListId id, String itemId) throws ShoppingListNotFoundException {
+    public ShoppingList deleteItem(ShoppingListId id, ShoppingListItemId itemId) throws ShoppingListNotFoundException {
         var shoppingList = shoppingListRepository.findById(id);
 
         if (shoppingList.isEmpty()) {

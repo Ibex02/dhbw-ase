@@ -2,16 +2,17 @@ package de.dhbw.ase.wgEinkaufsliste.domain.shoppingList;
 
 
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Price;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
 import org.apache.commons.lang3.Validate;
 
 public class ShoppingListItem {
-    private String id;
+    private ShoppingListItemId id;
     private String name;
     private int amount;
     private Price price;
 
-    public ShoppingListItem(String id, String name, int amount, Price price) {
-        Validate.notEmpty(id);
+    public ShoppingListItem(ShoppingListItemId id, String name, int amount, Price price) {
+        Validate.notNull(id, "");
         Validate.notEmpty(name);
 
         this.id = id;
@@ -20,7 +21,7 @@ public class ShoppingListItem {
         this.price = price;
     }
 
-    public String getId() {
+    public ShoppingListItemId getId() {
         return id;
     }
 
