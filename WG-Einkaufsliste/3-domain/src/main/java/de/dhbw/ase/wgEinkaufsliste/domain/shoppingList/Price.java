@@ -1,10 +1,10 @@
-package de.dhbw.ase.wgEinkaufsliste.domain.values;
+package de.dhbw.ase.wgEinkaufsliste.domain.shoppingList;
 
 import org.apache.commons.lang3.Validate;
 
 public class Price {
 
-    private double value;
+    private final double value;
 
     public Price(double value) {
         Validate.inclusiveBetween(0, Integer.MAX_VALUE, value);

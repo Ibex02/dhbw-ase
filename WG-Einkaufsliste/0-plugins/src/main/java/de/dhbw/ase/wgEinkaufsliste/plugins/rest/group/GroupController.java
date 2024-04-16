@@ -2,98 +2,99 @@ package de.dhbw.ase.wgEinkaufsliste.plugins.rest.group;
 
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupToGroupResourceMapper;
-import de.dhbw.ase.wgEinkaufsliste.application.group.GroupApplicationService;
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListApplicationService;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
+import de.dhbw.ase.wgEinkaufsliste.application.authentication.UserContextProvider;
+import de.dhbw.ase.wgEinkaufsliste.application.group.GroupNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
+import de.dhbw.ase.wgEinkaufsliste.application.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
-import de.dhbw.ase.wgEinkaufsliste.plugins.authentication.UserResolver;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.AddUserRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.ChangeGroupNameRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.CreateGroupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "${apiPrefix}/groups")
 public class GroupController {
-    private final GroupApplicationService groupService;
-    private final ShoppingListApplicationService shoppingListService;
-    private final UserResolver userResolver;
+    private final GroupService groupService;
+    private final UserContextProvider context;
 
-    private final GroupRepository groupRepository;
-    private final UserRepository userRepository;
     private final GroupToGroupResourceMapper mapToResource;
 
     @Autowired
-    public GroupController(GroupApplicationService groupService, ShoppingListApplicationService shoppingListService, UserResolver userResolver, GroupRepository groupRepository, UserRepository userRepository, GroupToGroupResourceMapper mapToResource) {
+    public GroupController(GroupService groupService, UserContextProvider context, GroupToGroupResourceMapper mapToResource) {
         this.groupService = groupService;
-        this.shoppingListService = shoppingListService;
-        this.userResolver = userResolver;
-        this.groupRepository = groupRepository;
-        this.userRepository = userRepository;
+        this.context = context;
         this.mapToResource = mapToResource;
     }
 
     @GetMapping("/{groupId}")
-    public GroupResource getGroup(@PathVariable String groupId) {
-
-        var group = groupRepository.findById(groupId);
-        return mapToResource.apply(group);
+    public ResponseEntity<GroupResource> getGroup(@PathVariable String groupId) {
+        return groupService.getById(groupId)
+                .map(mapToResource).map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("")
-    public List<GroupResource> getAllGroups(Authentication auth) {
-        User user = userResolver.getUser(auth);
+    public ResponseEntity<List<GroupResource>> getAllGroups() {
 
-        var result = new ArrayList<GroupResource>();
+        User user = context.getUser();
+        var groups = groupService.getAllForUser(user).stream().map(mapToResource).toList();
 
-        for (var groupId : user.getGroupIds()) {
-            var group = groupRepository.findById(groupId);
-
-            result.add(mapToResource.apply(group));
-        }
-
-        return result;
+        return ResponseEntity.ok(groups);
     }
 
     @PostMapping("")
-    public String createGroup(Authentication auth, @RequestBody CreateGroupRequest request) {
+    public ResponseEntity<GroupResource> createGroup(@RequestBody CreateGroupRequest request) {
 
-        User user = userResolver.getUser(auth);
+        var user = context.getUser();
+        var group = groupService.create(user, request.name());
+        var resource = mapToResource.apply(group);
 
-        Group group = groupService.create(user, request.name());
-        return group.getId();
+        return ResponseEntity.ok(resource);
     }
 
     @DeleteMapping("/{groupId}")
     public void deleteGroup(@PathVariable String groupId) {
-        var group = groupRepository.findById(groupId);
-        groupService.delete(group);
+        groupService.deleteById(groupId);
     }
 
     @PutMapping("/{groupId}/name")
-    public void changeName(@PathVariable String groupId, ChangeGroupNameRequest request) {
-        var group = groupRepository.findById(groupId);
-        groupService.changeName(group, request.newName());
+    public ResponseEntity<GroupResource> changeName(@PathVariable String groupId, ChangeGroupNameRequest request) {
+        try {
+            var group = groupService.changeNameById(groupId, request.newName());
+            var resource = mapToResource.apply(group);
+
+            return ResponseEntity.ok(resource);
+        } catch (GroupNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{groupId}/users")
-    public void addUser(@PathVariable String groupId, AddUserRequest request) {
-        var group = groupRepository.findById(groupId);
-        var user = userRepository.findById(request.userId());
-        groupService.addUser(group, user);
+    public ResponseEntity<GroupResource> addUser(@PathVariable String groupId, AddUserRequest request) {
+        try {
+            var group = groupService.addUserById(groupId, request.userId());
+            var resource = mapToResource.apply(group);
+
+            return ResponseEntity.ok(resource);
+        } catch (GroupNotFoundException | UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{groupId}/users/{userId}")
-    public void removeUser(@PathVariable String groupId, @PathVariable String userId) {
-        var group = groupRepository.findById(groupId);
-        var user = userRepository.findById(userId);
-        groupService.removeUser(group, user);
+    public ResponseEntity<GroupResource> removeUser(@PathVariable String groupId, @PathVariable String userId) {
+        try {
+            var group = groupService.addUserById(groupId, userId);
+            var resource = mapToResource.apply(group);
+
+            return ResponseEntity.ok(resource);
+        } catch (GroupNotFoundException | UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

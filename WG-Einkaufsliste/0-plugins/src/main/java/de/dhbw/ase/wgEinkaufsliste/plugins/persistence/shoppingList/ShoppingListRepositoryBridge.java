@@ -7,6 +7,8 @@ import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class ShoppingListRepositoryBridge implements ShoppingListRepository {
 
@@ -25,15 +27,17 @@ public class ShoppingListRepositoryBridge implements ShoppingListRepository {
     }
 
     @Override
-    public ShoppingList findById(String id) {
-        var entity = repository.findById(id);
-        return entity.map(mapFromRecord).orElse(null);
+    public Optional<ShoppingList> findById(String id) {
+        var record = repository.findById(id);
+        return record.map(mapFromRecord);
     }
 
     @Override
-    public void save(ShoppingList list) {
-        var entity = mapToRecord.apply(list);
-        repository.save(entity);
+    public ShoppingList save(ShoppingList list) {
+        var record = mapToRecord.apply(list);
+        var saved = repository.save(record);
+
+        return mapFromRecord.apply(saved);
     }
 
     @Override

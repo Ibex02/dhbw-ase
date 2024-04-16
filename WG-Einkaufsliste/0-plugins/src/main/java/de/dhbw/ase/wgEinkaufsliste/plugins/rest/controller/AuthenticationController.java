@@ -1,6 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.controller;
 
-import de.dhbw.ase.wgEinkaufsliste.application.user.UserApplicationService;
+import de.dhbw.ase.wgEinkaufsliste.application.user.UserService;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "${apiPrefix}/authentication")
 public class AuthenticationController {
 
-    private final UserApplicationService userService;
+    private final UserService userService;
 
     @Autowired
-    public AuthenticationController(UserApplicationService userService) {
+    public AuthenticationController(UserService userService) {
         this.userService = userService;
     }
 

@@ -1,4 +1,4 @@
-package de.dhbw.ase.wgEinkaufsliste.adapters.authentication;
+package de.dhbw.ase.wgEinkaufsliste.plugins.authentication;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import org.springframework.security.core.GrantedAuthority;

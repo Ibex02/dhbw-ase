@@ -1,5 +1,5 @@
 package de.dhbw.ase.wgEinkaufsliste.application.authentication;
 
-public interface CustomPasswordEncoder {
+public interface PasswordEncoder {
     String encode(String rawPassword);
 }

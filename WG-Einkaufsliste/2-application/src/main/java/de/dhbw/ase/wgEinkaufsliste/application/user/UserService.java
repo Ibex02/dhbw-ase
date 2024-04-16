@@ -1,28 +1,38 @@
 package de.dhbw.ase.wgEinkaufsliste.application.user;
 
-import de.dhbw.ase.wgEinkaufsliste.application.authentication.CustomPasswordEncoder;
-import de.dhbw.ase.wgEinkaufsliste.application.group.GroupApplicationService;
+import de.dhbw.ase.wgEinkaufsliste.application.authentication.PasswordEncoder;
+import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserApplicationService {
+import java.util.Optional;
 
-    private final CustomPasswordEncoder encoder;
+@Service
+public class UserService {
+
+    private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
 
-    private final GroupApplicationService groupService;
+    private final GroupService groupService;
 
     @Autowired
-    public UserApplicationService(CustomPasswordEncoder encoder, UserRepository userRepository, GroupRepository groupRepository, GroupApplicationService groupService) {
+    public UserService(PasswordEncoder encoder, UserRepository userRepository, GroupRepository groupRepository, GroupService groupService) {
         this.encoder = encoder;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.groupService = groupService;
+    }
+
+    public Optional<User> getById(String id) {
+        return userRepository.findById(id);
+    }
+
+    public Optional<User> getByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public User create(String email, String password) {
@@ -36,20 +46,14 @@ public class UserApplicationService {
     public void delete(User user) {
         for (var groupId : user.getGroupIds()) {
             var group = groupRepository.findById(groupId);
-
-            group.removeUser(user);
-
-            if (group.isEmpty()) {
-                groupService.delete(group);
-            }
+            group.ifPresent(value -> groupService.removeUser(value, user));
         }
 
         userRepository.deleteById(user.getId());
     }
 
-    public void changeName(User user, String newName) {
+    public User changeName(User user, String newName) {
         user.setName(newName);
-
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }

@@ -7,6 +7,8 @@ import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class UserRepositoryBridge implements UserRepository {
 
@@ -22,21 +24,22 @@ public class UserRepositoryBridge implements UserRepository {
     }
 
     @Override
-    public User findById(String id) {
-        var entity = repository.findById(id);
-        return entity.map(mapFromRecord).orElse(null);
+    public Optional<User> findById(String id) {
+        var record = repository.findById(id);
+        return record.map(mapFromRecord);
     }
 
     @Override
-    public User findByEmail(String email) {
-        var entity = repository.findUserByName(email);
-        return mapFromRecord.apply(entity);
+    public Optional<User> findByEmail(String email) {
+        var record = repository.findUserByEmail(email);
+        return record.map(mapFromRecord);
     }
 
     @Override
-    public void save(User user) {
-        var entity = mapToRecord.apply(user);
-        repository.save(entity);
+    public User save(User user) {
+        var record = mapToRecord.apply(user);
+        var saved = repository.save(record);
+        return mapFromRecord.apply(saved);
     }
 
     @Override

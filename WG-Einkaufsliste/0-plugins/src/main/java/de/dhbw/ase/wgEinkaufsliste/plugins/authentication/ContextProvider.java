@@ -1,6 +1,5 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.authentication;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.authentication.CustomUserDetails;
 import de.dhbw.ase.wgEinkaufsliste.application.authentication.UserContextProvider;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import org.springframework.security.core.context.SecurityContextHolder;

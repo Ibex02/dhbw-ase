@@ -9,8 +9,8 @@ import java.util.UUID;
 public class User {
 
     private final String id;
-    private String email;
-    private String passwordHash;
+    private final String email;
+    private final String passwordHash;
     private String name;
     private List<String> groupIds = new ArrayList<>();
 

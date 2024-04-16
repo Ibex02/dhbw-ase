@@ -4,15 +4,13 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.Shoppin
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListItemResourceToShoppingListItemMapper;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListToShoppingListResourceMapper;
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListApplicationService;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
-import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
+import de.dhbw.ase.wgEinkaufsliste.application.group.GroupNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.ChangeShoppingListNameRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.CreateShoppingListRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,56 +19,64 @@ import java.util.List;
 @RequestMapping(value = "${apiPrefix}/lists")
 public class ShoppingListController {
 
-    private final GroupRepository groupRepository;
-    private final ShoppingListRepository shoppingListRepository;
+    private final ShoppingListService shoppingListService;
     private final ShoppingListToShoppingListResourceMapper mapToResource;
     private final ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource;
-    private final ShoppingListApplicationService shoppingListService;
 
     @Autowired
     public ShoppingListController(
-            GroupRepository groupRepository, ShoppingListRepository shoppingListRepository, ShoppingListToShoppingListResourceMapper mapToResource,
+            ShoppingListToShoppingListResourceMapper mapToResource,
             ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource,
-            ShoppingListApplicationService shoppingListService) {
-        this.groupRepository = groupRepository;
-        this.shoppingListRepository = shoppingListRepository;
+            ShoppingListService shoppingListService) {
         this.mapToResource = mapToResource;
         this.mapItemFromResource = mapItemFromResource;
         this.shoppingListService = shoppingListService;
     }
 
     @GetMapping("")
-    @ResponseBody
     public List<ShoppingListResource> getLists(@RequestParam String groupId) {
         return null;
     }
 
     @PostMapping("")
-    public String createList(CreateShoppingListRequest request) {
+    public ResponseEntity<ShoppingListResource> createList(CreateShoppingListRequest request) {
+        try {
+            var shoppingList = shoppingListService.createById(request.groupId(), request.name());
+            var resource = mapToResource.apply(shoppingList);
 
-        var group = groupRepository.findById(request.groupId());
-        var list = shoppingListService.create(group, request.name());
-        return list.getId();
+            return ResponseEntity.ok(resource);
+        } catch (GroupNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/{listId}")
-    public ShoppingListResource get(@PathVariable String listId) {
-        var list = shoppingListRepository.findById(listId);
-        return mapToResource.apply(list);
+    @GetMapping("/{shoppingListId}")
+    public ResponseEntity<ShoppingListResource> get(@PathVariable String shoppingListId) {
+        return shoppingListService.getById(shoppingListId)
+                .map(mapToResource).map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{listId}")
-    public void delete(@PathVariable String listId) {
-        var list = shoppingListRepository.findById(listId);
-        shoppingListService.delete(list);
+    @DeleteMapping("/{shoppingListId}")
+    public void delete(@PathVariable String shoppingListId) {
+        try {
+            shoppingListService.deleteById(shoppingListId);
+        } catch (ShoppingListNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @PostMapping("/{listId}/items")
-    public void addItem(@PathVariable String listId, @RequestBody ShoppingListItemResource item) {
-        var listItem = mapItemFromResource.apply(item);
-        var list = shoppingListRepository.findById(listId);
+    @PostMapping("/{shoppingListId}/items")
+    public ResponseEntity<ShoppingListResource> addItem(@PathVariable String shoppingListId, @RequestBody ShoppingListItemResource item) {
+        try {
+            var listItem = mapItemFromResource.apply(item);
+            var shoppingList = shoppingListService.addItemById(shoppingListId, listItem);
+            var resource = mapToResource.apply(shoppingList);
 
-        shoppingListService.addItem(list, listItem);
+            return ResponseEntity.ok(resource);
+        } catch (ShoppingListNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 //    @PutMapping("/{listId}/items/{itemId}")
@@ -78,18 +84,27 @@ public class ShoppingListController {
 //
 //    }
 
-    @DeleteMapping("/{listId}/items/{itemId}")
-    public void deleteItem(@PathVariable String listId, @PathVariable String itemId) {
-        var list = shoppingListRepository.findById(listId);
+    @DeleteMapping("/{shoppingListId}/items/{itemId}")
+    public ResponseEntity<ShoppingListResource> deleteItem(@PathVariable String shoppingListId, @PathVariable String itemId) {
+        try {
+            var shoppingList = shoppingListService.deleteItemById(shoppingListId, itemId);
+            var resource = mapToResource.apply(shoppingList);
 
-        shoppingListService.deleteItemById(list, itemId);
-
+            return ResponseEntity.ok(resource);
+        } catch (ShoppingListNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @PutMapping("/{listId}/name")
-    public void changeName(@PathVariable String listId, @RequestBody ChangeShoppingListNameRequest request) {
-        var list = shoppingListRepository.findById(listId);
-        shoppingListService.changeName(list, request.newName());
-    }
+    @PutMapping("/{shoppingListId}/name")
+    public ResponseEntity<ShoppingListResource> changeName(@PathVariable String shoppingListId, @RequestBody ChangeShoppingListNameRequest request) {
+        try {
+            var shoppingList = shoppingListService.changeNameById(shoppingListId, request.newName());
+            var resource = mapToResource.apply(shoppingList);
 
+            return ResponseEntity.ok(resource);
+        } catch (ShoppingListNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

@@ -1,7 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.shoppingList;
 
 
-import de.dhbw.ase.wgEinkaufsliste.domain.values.Price;
 import org.apache.commons.lang3.Validate;
 
 public class ShoppingListItem {

@@ -1,7 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.authentication;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.authentication.CustomUserDetails;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
+import de.dhbw.ase.wgEinkaufsliste.application.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,21 +10,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userDetailsRepository;
+    private final UserService userService;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userDetailsRepository) {
-        this.userDetailsRepository = userDetailsRepository;
+    public CustomUserDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userDetailsRepository.findByEmail(username);
+        var user = userService.getByEmail(username);
 
-        if (user == null) {
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User with username: " + username + " not found");
         }
 
-        return new CustomUserDetails(user);
+        return new CustomUserDetails(user.get());
     }
 }

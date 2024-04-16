@@ -1,33 +1,47 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.user;
 
-import de.dhbw.ase.wgEinkaufsliste.application.user.UserApplicationService;
-import de.dhbw.ase.wgEinkaufsliste.plugins.authentication.UserResolver;
-import org.springframework.security.core.Authentication;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.user.UserResource;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.user.UserToUserResourceMapper;
+import de.dhbw.ase.wgEinkaufsliste.application.authentication.UserContextProvider;
+import de.dhbw.ase.wgEinkaufsliste.application.user.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "${apiPrefix}/users")
 public class UserController {
 
-    private final UserApplicationService userService;
-    private final UserResolver userResolver;
+    private final UserService userService;
+    private final UserContextProvider context;
+    private final UserToUserResourceMapper toResourceMapper;
 
-    public UserController(UserApplicationService userService, UserResolver userResolver) {
+    public UserController(UserService userService, UserContextProvider context, UserToUserResourceMapper toResourceMapper) {
         this.userService = userService;
-        this.userResolver = userResolver;
+        this.context = context;
+        this.toResourceMapper = toResourceMapper;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<UserResource> get() {
+        var user = context.getUser();
+        var resource = toResourceMapper.apply(user);
+
+        return ResponseEntity.ok(resource);
     }
 
     @DeleteMapping("")
-    public void delete(Authentication auth) {
-        var user = userResolver.getUser(auth);
-
+    public void delete() {
+        var user = context.getUser();
         userService.delete(user);
     }
 
     @PutMapping("/name")
-    public void changeName(Authentication auth, @RequestBody String newName) {
-        var user = userResolver.getUser(auth);
+    public ResponseEntity<UserResource> changeName(@RequestBody String newName) {
+        var user = context.getUser();
 
-        userService.changeName(user, newName);
+        var updatedUser = userService.changeName(user, newName);
+        var resource = toResourceMapper.apply(updatedUser);
+
+        return ResponseEntity.ok(resource);
     }
 }

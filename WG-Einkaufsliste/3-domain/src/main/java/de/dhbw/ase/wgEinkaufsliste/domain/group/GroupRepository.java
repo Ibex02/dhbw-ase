@@ -1,7 +1,9 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.group;
 
+import java.util.Optional;
+
 public interface GroupRepository {
-    Group findById(String id);
-    void save(Group group);
+    Optional<Group> findById(String id);
+    Group save(Group group);
     void deleteById(String id);
 }

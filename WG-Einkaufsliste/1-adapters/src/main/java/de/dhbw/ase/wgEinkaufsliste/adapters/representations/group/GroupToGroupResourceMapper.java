@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Component
@@ -33,7 +34,7 @@ public class GroupToGroupResourceMapper implements Function<Group, GroupResource
     }
 
     private List<GroupResource.GroupResourceUser> mapUsers(List<String> lists) {
-        return lists.stream().map(x -> map(userRepository.findById(x))).toList();
+        return lists.stream().map(userRepository::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 
     private GroupResource.GroupResourceUser map(User user) {
@@ -41,7 +42,7 @@ public class GroupToGroupResourceMapper implements Function<Group, GroupResource
     }
 
     private List<GroupResource.GroupResourceList> mapLists(List<String> lists) {
-        return lists.stream().map(x -> map(shoppingListRepository.findById(x))).toList();
+        return lists.stream().map(shoppingListRepository::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 
     private GroupResource.GroupResourceList map(ShoppingList list) {

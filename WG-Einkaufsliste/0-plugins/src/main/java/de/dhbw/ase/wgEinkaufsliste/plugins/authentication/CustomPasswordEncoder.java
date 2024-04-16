@@ -1,16 +1,15 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.authentication;
 
-import de.dhbw.ase.wgEinkaufsliste.application.authentication.CustomPasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PasswordEncoderBridge implements PasswordEncoder, CustomPasswordEncoder {
+public class CustomPasswordEncoder implements PasswordEncoder, de.dhbw.ase.wgEinkaufsliste.application.authentication.PasswordEncoder {
 
-    private final BCryptPasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
-    public PasswordEncoderBridge() {
+    public CustomPasswordEncoder() {
         encoder = new BCryptPasswordEncoder();
     }
 

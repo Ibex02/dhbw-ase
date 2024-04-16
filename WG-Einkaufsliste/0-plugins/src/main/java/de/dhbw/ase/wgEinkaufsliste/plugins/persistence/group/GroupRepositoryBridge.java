@@ -1,6 +1,5 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.persistence.group;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.GroupRecord;
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.GroupRecordToGroupMapper;
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.GroupToGroupRecordMapper;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
@@ -8,7 +7,7 @@ import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class GroupRepositoryBridge implements GroupRepository {
@@ -25,19 +24,21 @@ public class GroupRepositoryBridge implements GroupRepository {
     }
 
     @Override
-    public Group findById(String id) {
-        var result = repository.findById(id);
-        return result.map(mapFromRecord).orElse(null);
+    public Optional<Group> findById(String id) {
+        var record = repository.findById(id);
+        return record.map(mapFromRecord);
     }
 
     @Override
-    public void save(Group group) {
-        GroupRecord record = mapToRecord.apply(group);
-        repository.save(record);
+    public Group save(Group group) {
+        var record = mapToRecord.apply(group);
+        var saved = repository.save(record);
+
+        return mapFromRecord.apply(saved);
     }
 
     @Override
     public void deleteById(String id) {
-
+        repository.deleteById(id);
     }
 }

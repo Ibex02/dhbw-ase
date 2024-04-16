@@ -4,8 +4,10 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserRecord;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.util.Optional;
+
 public interface MongoUserRepository extends MongoRepository<UserRecord, String> {
 
-    @Query("{userName:'?0'}")
-    public UserRecord findUserByName(String name);
+    @Query("{email:'?0'}")
+    Optional<UserRecord> findUserByEmail(String email);
 }
