@@ -14,6 +14,6 @@ public class UserRecordToUserMapper implements Function<UserRecord, User> {
     }
 
     private User map(UserRecord entity) {
-        return new User(entity.getId(), entity.getUserName(), entity.getPassword(), entity.getDisplayName(), entity.getGroups());
+        return new User(entity.id(), entity.email(), entity.password(), entity.name(), entity.groups());
     }
 }

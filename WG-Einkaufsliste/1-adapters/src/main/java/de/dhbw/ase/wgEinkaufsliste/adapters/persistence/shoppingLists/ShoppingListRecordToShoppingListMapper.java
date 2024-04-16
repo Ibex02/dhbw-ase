@@ -17,7 +17,7 @@ public class ShoppingListRecordToShoppingListMapper implements Function<Shopping
     }
 
     private ShoppingList map(ShoppingListRecord record) {
-        return new ShoppingList(record.getId(), record.getGroupId(), record.getName(), map(record.getItems()));
+        return new ShoppingList(record.id(), record.groupId(), record.name(), map(record.items()));
     }
 
     private List<ShoppingListItem> map(List<ShoppingListRecord.ShoppingListRecordItem> items) {

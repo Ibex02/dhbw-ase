@@ -26,6 +26,6 @@ public class PasswordEncoderBridge implements PasswordEncoder, CustomPasswordEnc
 
     @Override
     public String encode(String rawPassword) {
-        return null;
+        return encoder.encode(rawPassword);
     }
 }

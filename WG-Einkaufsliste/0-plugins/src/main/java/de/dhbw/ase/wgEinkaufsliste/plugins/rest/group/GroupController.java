@@ -2,7 +2,6 @@ package de.dhbw.ase.wgEinkaufsliste.plugins.rest.group;
 
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupToGroupResourceMapper;
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListResource;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupApplicationService;
 import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListApplicationService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
@@ -10,6 +9,9 @@ import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import de.dhbw.ase.wgEinkaufsliste.plugins.authentication.UserResolver;
+import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.AddUserRequest;
+import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.ChangeGroupNameRequest;
+import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.CreateGroupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +41,7 @@ public class GroupController {
     }
 
     @GetMapping("/{groupId}")
-    public GroupResource getGroup(Authentication auth, @PathVariable String groupId) {
+    public GroupResource getGroup(@PathVariable String groupId) {
 
         var group = groupRepository.findById(groupId);
         return mapToResource.apply(group);
@@ -70,26 +72,26 @@ public class GroupController {
     }
 
     @DeleteMapping("/{groupId}")
-    public void deleteGroup(Authentication auth, @PathVariable String groupId) {
+    public void deleteGroup(@PathVariable String groupId) {
         var group = groupRepository.findById(groupId);
         groupService.delete(group);
     }
 
     @PutMapping("/{groupId}/name")
-    public void changeName(Authentication auth, @PathVariable String groupId, ChangeGroupNameRequest request) {
+    public void changeName(@PathVariable String groupId, ChangeGroupNameRequest request) {
         var group = groupRepository.findById(groupId);
         groupService.changeName(group, request.newName());
     }
 
     @PutMapping("/{groupId}/users")
-    public void addUser(Authentication auth, @PathVariable String groupId, AddUserRequest request) {
+    public void addUser(@PathVariable String groupId, AddUserRequest request) {
         var group = groupRepository.findById(groupId);
         var user = userRepository.findById(request.userId());
         groupService.addUser(group, user);
     }
 
     @DeleteMapping("/{groupId}/users/{userId}")
-    public void removeUser(Authentication auth, @PathVariable String groupId, @PathVariable String userId) {
+    public void removeUser(@PathVariable String groupId, @PathVariable String userId) {
         var group = groupRepository.findById(groupId);
         var user = userRepository.findById(userId);
         groupService.removeUser(group, user);

@@ -7,6 +7,8 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.Shoppin
 import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListApplicationService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
+import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.ChangeShoppingListNameRequest;
+import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.CreateShoppingListRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,12 +41,12 @@ public class ShoppingListController {
 
     @GetMapping("")
     @ResponseBody
-    public List<ShoppingListResource> getLists(Authentication auth, @RequestParam String groupId) {
+    public List<ShoppingListResource> getLists(@RequestParam String groupId) {
         return null;
     }
 
     @PostMapping("")
-    public String createList(@AuthenticationPrincipal UserDetails user, CreateShoppingListRequest request) {
+    public String createList(CreateShoppingListRequest request) {
 
         var group = groupRepository.findById(request.groupId());
         var list = shoppingListService.create(group, request.name());
@@ -52,19 +54,19 @@ public class ShoppingListController {
     }
 
     @GetMapping("/{listId}")
-    public ShoppingListResource get(Authentication auth, @PathVariable String listId) {
+    public ShoppingListResource get(@PathVariable String listId) {
         var list = shoppingListRepository.findById(listId);
         return mapToResource.apply(list);
     }
 
     @DeleteMapping("/{listId}")
-    public void delete(Authentication auth, @PathVariable String listId) {
+    public void delete(@PathVariable String listId) {
         var list = shoppingListRepository.findById(listId);
         shoppingListService.delete(list);
     }
 
     @PostMapping("/{listId}/items")
-    public void addItem(Authentication auth, @PathVariable String listId, @RequestBody ShoppingListItemResource item) {
+    public void addItem(@PathVariable String listId, @RequestBody ShoppingListItemResource item) {
         var listItem = mapItemFromResource.apply(item);
         var list = shoppingListRepository.findById(listId);
 
@@ -77,7 +79,7 @@ public class ShoppingListController {
 //    }
 
     @DeleteMapping("/{listId}/items/{itemId}")
-    public void deleteItem(Authentication auth, @PathVariable String listId, @PathVariable String itemId) {
+    public void deleteItem(@PathVariable String listId, @PathVariable String itemId) {
         var list = shoppingListRepository.findById(listId);
 
         shoppingListService.deleteItemById(list, itemId);
@@ -85,7 +87,7 @@ public class ShoppingListController {
     }
 
     @PutMapping("/{listId}/name")
-    public void changeName(Authentication auth, @PathVariable String listId, @RequestBody ChangeShoppingListNameRequest request) {
+    public void changeName(@PathVariable String listId, @RequestBody ChangeShoppingListNameRequest request) {
         var list = shoppingListRepository.findById(listId);
         shoppingListService.changeName(list, request.newName());
     }

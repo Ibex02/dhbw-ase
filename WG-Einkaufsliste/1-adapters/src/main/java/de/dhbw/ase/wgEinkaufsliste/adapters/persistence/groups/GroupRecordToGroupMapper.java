@@ -14,7 +14,6 @@ public class GroupRecordToGroupMapper implements Function<GroupRecord, Group> {
     }
 
     private Group map(GroupRecord entity) {
-        return new Group(entity.getId(), entity.getName(), entity.getUsers(), entity.getShoppingLists());
+        return new Group(entity.id(), entity.name(), entity.users(), entity.shoppingLists());
     }
-
 }

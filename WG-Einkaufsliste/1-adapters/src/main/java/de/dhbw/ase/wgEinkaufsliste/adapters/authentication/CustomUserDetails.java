@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+import static org.springframework.security.core.userdetails.User.builder;
+
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
@@ -14,7 +16,7 @@ public class CustomUserDetails implements UserDetails {
 
     public CustomUserDetails(User user) {
         this.user = user;
-        this.userDetails = org.springframework.security.core.userdetails.User.builder()
+        this.userDetails = builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .build();
