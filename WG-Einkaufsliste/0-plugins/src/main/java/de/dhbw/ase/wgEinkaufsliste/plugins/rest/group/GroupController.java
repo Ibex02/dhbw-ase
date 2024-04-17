@@ -5,11 +5,8 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupToGroupRe
 import de.dhbw.ase.wgEinkaufsliste.application.authentication.UserContextProvider;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
-import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.AddUserRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.ChangeGroupNameRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.CreateGroupRequest;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -87,34 +84,6 @@ public class GroupController {
 
             return ResponseEntity.ok(resource);
         } catch (GroupNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/{id}/users")
-    @ApiResponse(responseCode = "200")
-    @ApiResponse(responseCode = "404", content = @Content)
-    public ResponseEntity<GroupResource> addUser(@PathVariable String id, AddUserRequest request) {
-        try {
-            var group = groupService.addUser(new GroupId(id), new UserId(request.userId()));
-            var resource = mapToResource.apply(group);
-
-            return ResponseEntity.ok(resource);
-        } catch (GroupNotFoundException | UserNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/{id}/users/{userId}")
-    @ApiResponse(responseCode = "200")
-    @ApiResponse(responseCode = "404", content = @Content)
-    public ResponseEntity<GroupResource> removeUser(@PathVariable String id, @PathVariable String userId) {
-        try {
-            var group = groupService.removeUser(new GroupId(id), new UserId(userId));
-            var resource = mapToResource.apply(group);
-
-            return ResponseEntity.ok(resource);
-        } catch (GroupNotFoundException | UserNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

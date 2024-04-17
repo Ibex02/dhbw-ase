@@ -1,16 +1,13 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListItemResource;
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListItemResourceToShoppingListItemMapper;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListToShoppingListResourceMapper;
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListManagementService;
 import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListNotFoundException;
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListManagementService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
-import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.ChangeShoppingListNameRequest;
 import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.CreateShoppingListRequest;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,17 +24,14 @@ import java.util.List;
 @RequestMapping(value = "${apiPrefix}/lists")
 public class ShoppingListController {
 
-    private final ShoppingListService shoppingListService;
+    private final ShoppingListManagementService shoppingListService;
     private final ShoppingListToShoppingListResourceMapper mapToResource;
-    private final ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource;
 
     @Autowired
     public ShoppingListController(
             ShoppingListToShoppingListResourceMapper mapToResource,
-            ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource,
-            ShoppingListService shoppingListService) {
+            ShoppingListManagementService shoppingListService) {
         this.mapToResource = mapToResource;
-        this.mapItemFromResource = mapItemFromResource;
         this.shoppingListService = shoppingListService;
     }
 
@@ -88,35 +82,6 @@ public class ShoppingListController {
             return HttpStatus.OK;
         } catch (ShoppingListNotFoundException e) {
             return HttpStatus.NOT_FOUND;
-        }
-    }
-
-    @PostMapping("/{id}/items")
-    @ApiResponse(responseCode = "200")
-    @ApiResponse(responseCode = "404", content = @Content)
-    public ResponseEntity<ShoppingListResource> addItem(@PathVariable String id, @RequestBody ShoppingListItemResource item) {
-        try {
-            var listItem = mapItemFromResource.apply(item);
-            var shoppingList = shoppingListService.addOrUpdateItem(new ShoppingListId(id), listItem);
-            var resource = mapToResource.apply(shoppingList);
-
-            return ResponseEntity.ok(resource);
-        } catch (ShoppingListNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/{id}/items/{itemId}")
-    @ApiResponse(responseCode = "200")
-    @ApiResponse(responseCode = "404", content = @Content)
-    public ResponseEntity<ShoppingListResource> deleteItem(@PathVariable String id, @PathVariable String itemId) {
-        try {
-            var shoppingList = shoppingListService.deleteItem(new ShoppingListId(id), new ShoppingListItemId(itemId));
-            var resource = mapToResource.apply(shoppingList);
-
-            return ResponseEntity.ok(resource);
-        } catch (ShoppingListNotFoundException e) {
-            return ResponseEntity.notFound().build();
         }
     }
 

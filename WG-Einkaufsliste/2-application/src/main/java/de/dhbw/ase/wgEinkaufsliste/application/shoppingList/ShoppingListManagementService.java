@@ -30,7 +30,7 @@ public class ShoppingListManagementService {
     }
 
     public List<ShoppingList> getAll(GroupId groupId) throws GroupNotFoundException {
-        var group = getById(groupId);
+        var group = groupRepository.getById(groupId);
 
         var result = new ArrayList<ShoppingList>();
         for (var listId : group.getListIds()) {
@@ -42,7 +42,7 @@ public class ShoppingListManagementService {
     }
 
     public ShoppingList create(GroupId groupId, String name) throws GroupNotFoundException {
-        var group = getById(groupId);
+        var group = groupRepository.getById(groupId);
         var list = new ShoppingList(group, name);
 
         shoppingListRepository.save(list);
@@ -52,7 +52,7 @@ public class ShoppingListManagementService {
     }
 
     public void delete(ShoppingListId id) throws ShoppingListNotFoundException {
-        var list = getById(id);
+        var list = shoppingListRepository.getById(id);
 
         var groupOpt = groupRepository.findById(list.getGroupId());
         if (groupOpt.isPresent()) {
@@ -66,23 +66,9 @@ public class ShoppingListManagementService {
     }
 
     public ShoppingList changeName(ShoppingListId id, String newName) throws ShoppingListNotFoundException {
-        var list = getById(id);
+        var list = shoppingListRepository.getById(id);
 
         list.setName(newName);
         return shoppingListRepository.save(list);
-    }
-
-    public ShoppingList getById(ShoppingListId id) throws ShoppingListNotFoundException {
-        var listOpt = shoppingListRepository.findById(id);
-
-        if (listOpt.isEmpty()) throw new ShoppingListNotFoundException(id);
-        return listOpt.get();
-    }
-
-    private Group getById(GroupId groupId) throws GroupNotFoundException {
-        var groupOpt = groupRepository.findById(groupId);
-
-        if (groupOpt.isEmpty()) throw new GroupNotFoundException(groupId);
-        return groupOpt.get();
     }
 }
