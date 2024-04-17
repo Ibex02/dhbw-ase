@@ -19,24 +19,23 @@ public class ShoppingListItemService {
         this.shoppingListRepository = shoppingListRepository;
     }
 
-    public ShoppingList addOrUpdate(ShoppingListId id, ShoppingListItem item) throws ShoppingListNotFoundException {
-        var list = getById(id);
-
+    public ShoppingList addOrUpdateItem(ShoppingList list, ShoppingListItem item) {
         list.addOrUpdateItem(item);
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList deleteItem(ShoppingListId id, ShoppingListItemId itemId) throws ShoppingListNotFoundException {
-        var list = getById(id);
-
+    public ShoppingList deleteItem(ShoppingList list, ShoppingListItemId itemId) {
         list.removeItemById(itemId);
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList getById(ShoppingListId id) throws ShoppingListNotFoundException {
-        var listOpt = shoppingListRepository.findById(id);
+    public ShoppingList addOrUpdateItem(ShoppingListId id, ShoppingListItem item) throws ShoppingListNotFoundException {
+        var list = shoppingListRepository.getById(id);
+        return addOrUpdateItem(list, item);
+    }
 
-        if (listOpt.isEmpty()) throw new ShoppingListNotFoundException(id);
-        return listOpt.get();
+    public ShoppingList deleteItem(ShoppingListId id, ShoppingListItemId itemId) throws ShoppingListNotFoundException {
+        var list = shoppingListRepository.getById(id);
+        return deleteItem(list, itemId);
     }
 }

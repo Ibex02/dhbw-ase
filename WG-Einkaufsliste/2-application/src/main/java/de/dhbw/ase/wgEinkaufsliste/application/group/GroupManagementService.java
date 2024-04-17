@@ -25,10 +25,6 @@ public class GroupManagementService {
         return groupRepository.findById(id);
     }
 
-    public Group getById(GroupId id) throws GroupNotFoundException {
-        return groupRepository.getById(id);
-    }
-
     public Group create(String name) {
         Group group = new Group(name);
         return groupRepository.save(group);

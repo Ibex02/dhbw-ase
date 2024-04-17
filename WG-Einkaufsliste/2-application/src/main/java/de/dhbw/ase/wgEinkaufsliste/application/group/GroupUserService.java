@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserGroupService {
+public class GroupUserService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public UserGroupService(GroupRepository groupRepository, UserRepository userRepository) {
+    public GroupUserService(GroupRepository groupRepository, UserRepository userRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
     }
@@ -30,6 +30,10 @@ public class UserGroupService {
                 .map(groupRepository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get).toList();
+    }
+
+    public User getById(UserId id) throws UserNotFoundException {
+        return userRepository.getById(id);
     }
 
     public Group addUser(Group group, User user) {
@@ -46,6 +50,7 @@ public class UserGroupService {
             groupRepository.deleteById(group.getId());
             return group;
         }
+
         return groupRepository.save(group);
     }
 

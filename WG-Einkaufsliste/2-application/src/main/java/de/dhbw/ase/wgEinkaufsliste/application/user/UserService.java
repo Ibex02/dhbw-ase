@@ -1,8 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.application.user;
 
 import de.dhbw.ase.wgEinkaufsliste.application.authentication.PasswordEncoder;
-import de.dhbw.ase.wgEinkaufsliste.application.group.UserGroupService;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
+import de.dhbw.ase.wgEinkaufsliste.application.group.GroupUserService;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
@@ -16,14 +15,12 @@ public class UserService {
 
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
-    private final UserGroupService groupService;
+    private final GroupUserService groupService;
 
     @Autowired
-    public UserService(PasswordEncoder encoder, UserRepository userRepository, GroupRepository groupRepository, UserGroupService groupService) {
+    public UserService(PasswordEncoder encoder, UserRepository userRepository, GroupUserService groupService) {
         this.encoder = encoder;
         this.userRepository = userRepository;
-        this.groupRepository = groupRepository;
         this.groupService = groupService;
     }
 
@@ -49,11 +46,7 @@ public class UserService {
     }
 
     public void delete(User user) {
-        for (var groupId : user.getGroupIds()) {
-            var group = groupRepository.findById(groupId);
-            group.ifPresent(value -> groupService.removeUser(value, user));
-        }
-
+        groupService.getAllForUser(user).forEach(x -> groupService.removeUser(x, user));
         userRepository.deleteById(user.getId());
     }
 

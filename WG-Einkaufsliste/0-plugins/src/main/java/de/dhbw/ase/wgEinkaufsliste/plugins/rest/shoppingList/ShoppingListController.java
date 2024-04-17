@@ -4,6 +4,7 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.Shoppin
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListItemResourceToShoppingListItemMapper;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListToShoppingListResourceMapper;
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListManagementService;
@@ -26,7 +27,7 @@ import java.util.List;
 @RequestMapping(value = "${apiPrefix}/lists")
 public class ShoppingListController {
 
-    private final ShoppingListManagementService shoppingListService;
+    private final ShoppingListService shoppingListService;
     private final ShoppingListToShoppingListResourceMapper mapToResource;
     private final ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource;
 
@@ -34,7 +35,7 @@ public class ShoppingListController {
     public ShoppingListController(
             ShoppingListToShoppingListResourceMapper mapToResource,
             ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource,
-            ShoppingListManagementService shoppingListService) {
+            ShoppingListService shoppingListService) {
         this.mapToResource = mapToResource;
         this.mapItemFromResource = mapItemFromResource;
         this.shoppingListService = shoppingListService;
@@ -96,7 +97,7 @@ public class ShoppingListController {
     public ResponseEntity<ShoppingListResource> addItem(@PathVariable String id, @RequestBody ShoppingListItemResource item) {
         try {
             var listItem = mapItemFromResource.apply(item);
-            var shoppingList = shoppingListService.addOrUpdate(new ShoppingListId(id), listItem);
+            var shoppingList = shoppingListService.addOrUpdateItem(new ShoppingListId(id), listItem);
             var resource = mapToResource.apply(shoppingList);
 
             return ResponseEntity.ok(resource);

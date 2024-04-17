@@ -59,7 +59,7 @@ public class GroupController {
     public ResponseEntity<GroupResource> createGroup(@RequestBody CreateGroupRequest request) {
 
         var user = context.getUser();
-        var group = groupService.create(request.name(), user);
+        var group = groupService.createWithUser(request.name(), user);
         var resource = mapToResource.apply(group);
 
         return ResponseEntity.ok(resource);

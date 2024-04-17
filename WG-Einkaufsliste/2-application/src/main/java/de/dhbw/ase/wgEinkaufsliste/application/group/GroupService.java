@@ -15,12 +15,12 @@ import java.util.Optional;
 @Service
 public class GroupService {
     private final GroupManagementService groupManagementService;
-    private final UserGroupService userGroupService;
+    private final GroupUserService groupUserService;
 
     @Autowired
-    public GroupService(GroupManagementService groupManagementService, UserGroupService userGroupService) {
+    public GroupService(GroupManagementService groupManagementService, GroupUserService groupUserService) {
         this.groupManagementService = groupManagementService;
-        this.userGroupService = userGroupService;
+        this.groupUserService = groupUserService;
     }
 
     public Optional<Group> findById(GroupId id) {
@@ -28,28 +28,12 @@ public class GroupService {
     }
 
     public List<Group> getAllForUser(User user) {
-        return userGroupService.getAllForUser(user);
+        return groupUserService.getAllForUser(user);
     }
 
-    public Group create(String name, User user) {
-        var group = new Group(name);
-        return userGroupService.addUser(group, user);
-    }
-
-    public Group changeName(Group group, String newName) {
-        return groupManagementService.changeName(group, newName);
-    }
-
-    public void delete(Group group) {
-        groupManagementService.delete(group);
-    }
-
-    public Group addUser(Group group, User user) {
-        return userGroupService.addUser(group, user);
-    }
-
-    public Group removeUser(Group group, User user) {
-        return userGroupService.removeUser(group, user);
+    public Group createWithUser(String name, User user) {
+        var group = groupManagementService.create(name);
+        return groupUserService.addUser(group, user);
     }
 
     public Group changeName(GroupId id, String newName) throws GroupNotFoundException {
@@ -61,10 +45,10 @@ public class GroupService {
     }
 
     public Group addUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException {
-        return userGroupService.addUser(groupId, userId);
+        return groupUserService.addUser(groupId, userId);
     }
 
     public Group removeUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException {
-        return userGroupService.removeUser(groupId, userId);
+        return groupUserService.removeUser(groupId, userId);
     }
 }
