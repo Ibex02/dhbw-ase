@@ -3,7 +3,6 @@ package de.dhbw.ase.wgEinkaufsliste.adapters.persistence.shoppingLists;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
-import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Price;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Quantity;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
@@ -29,9 +28,8 @@ public class ShoppingListRecordToShoppingListMapper implements Function<Shopping
 
     private ShoppingListItem map(ShoppingListRecord.ShoppingListRecordItem item) {
         var id = new ShoppingListItemId(item.id());
-        var price = new Price(item.price());
-
         var quantity = new Quantity(item.quantity());
-        return new ShoppingListItem(id, item.name(), quantity, price);
+
+        return new ShoppingListItem(id, item.name(), quantity);
     }
 }

@@ -9,15 +9,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>0-plugins</artifactId>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-            
                 <configuration>
                     <debug>true</debug>
-                    <release>17</release>
+                    <release>20</release>
                 </configuration>
             </plugin>
             <plugin>

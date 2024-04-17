@@ -1,7 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.application.user;
 
 import de.dhbw.ase.wgEinkaufsliste.application.authentication.PasswordEncoder;
-import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
+import de.dhbw.ase.wgEinkaufsliste.application.group.UserGroupService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
@@ -17,22 +17,21 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
-
-    private final GroupService groupService;
+    private final UserGroupService groupService;
 
     @Autowired
-    public UserService(PasswordEncoder encoder, UserRepository userRepository, GroupRepository groupRepository, GroupService groupService) {
+    public UserService(PasswordEncoder encoder, UserRepository userRepository, GroupRepository groupRepository, UserGroupService groupService) {
         this.encoder = encoder;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.groupService = groupService;
     }
 
-    public Optional<User> getById(UserId id) {
+    public Optional<User> findById(UserId id) {
         return userRepository.findById(id);
     }
 
-    public Optional<User> getByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 

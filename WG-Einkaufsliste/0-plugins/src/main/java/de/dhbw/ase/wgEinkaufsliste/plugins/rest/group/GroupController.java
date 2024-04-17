@@ -3,9 +3,9 @@ package de.dhbw.ase.wgEinkaufsliste.plugins.rest.group;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupToGroupResourceMapper;
 import de.dhbw.ase.wgEinkaufsliste.application.authentication.UserContextProvider;
-import de.dhbw.ase.wgEinkaufsliste.application.group.GroupNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
-import de.dhbw.ase.wgEinkaufsliste.application.user.UserNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
@@ -40,7 +40,7 @@ public class GroupController {
     @ApiResponse(responseCode = "200")
     @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<GroupResource> getGroup(@PathVariable String id) {
-        return groupService.getById(new GroupId(id))
+        return groupService.findById(new GroupId(id))
                 .map(mapToResource).map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -48,7 +48,6 @@ public class GroupController {
     @GetMapping("")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<GroupResource>> getAllGroups() {
-
         User user = context.getUser();
         var groups = groupService.getAllForUser(user).stream().map(mapToResource).toList();
 
@@ -60,7 +59,7 @@ public class GroupController {
     public ResponseEntity<GroupResource> createGroup(@RequestBody CreateGroupRequest request) {
 
         var user = context.getUser();
-        var group = groupService.create(user, request.name());
+        var group = groupService.create(request.name(), user);
         var resource = mapToResource.apply(group);
 
         return ResponseEntity.ok(resource);

@@ -1,4 +1,4 @@
-package de.dhbw.ase.wgEinkaufsliste.application.user;
+package de.dhbw.ase.wgEinkaufsliste.domain.user;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 

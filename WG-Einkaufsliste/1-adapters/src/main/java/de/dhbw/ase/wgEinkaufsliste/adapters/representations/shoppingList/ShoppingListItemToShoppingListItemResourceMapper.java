@@ -17,8 +17,7 @@ public class ShoppingListItemToShoppingListItemResourceMapper implements Functio
     private ShoppingListItemResource map(ShoppingListItem item) {
         var id = item.id().value();
         var quantity = item.quantity().value();
-        var price = item.price().value();
 
-        return new ShoppingListItemResource(id, item.name(), quantity, price);
+        return new ShoppingListItemResource(id, item.name(), quantity);
     }
 }

@@ -3,8 +3,10 @@ package de.dhbw.ase.wgEinkaufsliste.plugins.persistence.shoppingList;
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.shoppingLists.ShoppingListRecordToShoppingListMapper;
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.shoppingLists.ShoppingListToShoppingListRecordMapper;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +33,11 @@ public class ShoppingListRepositoryBridge implements ShoppingListRepository {
     public Optional<ShoppingList> findById(ShoppingListId id) {
         var record = repository.findById(id.value());
         return record.map(mapFromRecord);
+    }
+
+    @Override
+    public ShoppingList getById(ShoppingListId id) throws ShoppingListNotFoundException {
+        return findById(id).orElseThrow(() -> new ShoppingListNotFoundException(id));
     }
 
     @Override

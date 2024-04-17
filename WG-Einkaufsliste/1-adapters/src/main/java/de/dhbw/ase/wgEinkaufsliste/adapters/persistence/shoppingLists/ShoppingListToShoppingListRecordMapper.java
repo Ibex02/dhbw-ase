@@ -26,8 +26,7 @@ public class ShoppingListToShoppingListRecordMapper implements Function<Shopping
     private ShoppingListRecord.ShoppingListRecordItem map(ShoppingListItem item) {
         var id = item.id().value();
         var quantity = item.quantity().value();
-        var price = item.price().value();
 
-        return new ShoppingListRecord.ShoppingListRecordItem(id, item.name(), quantity, price);
+        return new ShoppingListRecord.ShoppingListRecordItem(id, item.name(), quantity);
     }
 }

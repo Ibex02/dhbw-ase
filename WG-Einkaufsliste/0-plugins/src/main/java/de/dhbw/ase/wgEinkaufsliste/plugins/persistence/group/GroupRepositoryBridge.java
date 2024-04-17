@@ -2,6 +2,7 @@ package de.dhbw.ase.wgEinkaufsliste.plugins.persistence.group;
 
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.GroupRecordToGroupMapper;
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.GroupToGroupRecordMapper;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
@@ -28,6 +29,11 @@ public class GroupRepositoryBridge implements GroupRepository {
     public Optional<Group> findById(GroupId id) {
         var record = repository.findById(id.value());
         return record.map(mapFromRecord);
+    }
+
+    @Override
+    public Group getById(GroupId id) throws GroupNotFoundException {
+        return findById(id).orElseThrow(() -> new GroupNotFoundException(id));
     }
 
     @Override

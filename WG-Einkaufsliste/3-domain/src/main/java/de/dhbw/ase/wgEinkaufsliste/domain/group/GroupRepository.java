@@ -6,6 +6,7 @@ import java.util.Optional;
 
 public interface GroupRepository {
     Optional<Group> findById(GroupId id);
+    Group getById(GroupId id) throws GroupNotFoundException;
     Group save(Group group);
     void deleteById(GroupId id);
 }

@@ -13,6 +13,8 @@ public class EmailValidator {
     }
 
     public boolean isValidEmailAddress(String email) {
+        if (email == null) return false;
+
         var matcher = pattern.matcher(email);
         return matcher.matches();
     }

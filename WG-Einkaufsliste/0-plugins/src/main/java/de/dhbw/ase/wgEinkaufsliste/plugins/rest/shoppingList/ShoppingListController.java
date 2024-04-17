@@ -4,9 +4,9 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.Shoppin
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListItemResourceToShoppingListItemMapper;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListToShoppingListResourceMapper;
-import de.dhbw.ase.wgEinkaufsliste.application.group.GroupNotFoundException;
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListNotFoundException;
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListManagementService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
@@ -26,7 +26,7 @@ import java.util.List;
 @RequestMapping(value = "${apiPrefix}/lists")
 public class ShoppingListController {
 
-    private final ShoppingListService shoppingListService;
+    private final ShoppingListManagementService shoppingListService;
     private final ShoppingListToShoppingListResourceMapper mapToResource;
     private final ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource;
 
@@ -34,7 +34,7 @@ public class ShoppingListController {
     public ShoppingListController(
             ShoppingListToShoppingListResourceMapper mapToResource,
             ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource,
-            ShoppingListService shoppingListService) {
+            ShoppingListManagementService shoppingListService) {
         this.mapToResource = mapToResource;
         this.mapItemFromResource = mapItemFromResource;
         this.shoppingListService = shoppingListService;
@@ -72,7 +72,7 @@ public class ShoppingListController {
     @ApiResponse(responseCode = "200")
     @ApiResponse(responseCode = "404")
     public ResponseEntity<ShoppingListResource> get(@PathVariable String id) {
-        return shoppingListService.getById(new ShoppingListId(id))
+        return shoppingListService.findById(new ShoppingListId(id))
                 .map(mapToResource).map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

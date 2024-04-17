@@ -1,4 +1,4 @@
-package de.dhbw.ase.wgEinkaufsliste.application.shoppingList;
+package de.dhbw.ase.wgEinkaufsliste.domain.shoppingList;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 

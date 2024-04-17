@@ -1,6 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.representations.group;
 
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListManagementService;
 import de.dhbw.ase.wgEinkaufsliste.application.user.UserService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
@@ -18,10 +18,10 @@ import java.util.function.Function;
 public class GroupToGroupResourceMapper implements Function<Group, GroupResource> {
 
     private final UserService userService;
-    private final ShoppingListService shoppingListService;
+    private final ShoppingListManagementService shoppingListService;
 
     @Autowired
-    public GroupToGroupResourceMapper(UserService userService, ShoppingListService shoppingListService) {
+    public GroupToGroupResourceMapper(UserService userService, ShoppingListManagementService shoppingListService) {
         this.userService = userService;
         this.shoppingListService = shoppingListService;
     }
@@ -40,7 +40,7 @@ public class GroupToGroupResourceMapper implements Function<Group, GroupResource
     }
 
     private List<GroupResource.GroupResourceUser> mapUsers(List<UserId> lists) {
-        return lists.stream().map(userService::getById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
+        return lists.stream().map(userService::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 
     private GroupResource.GroupResourceUser map(User user) {
@@ -48,7 +48,7 @@ public class GroupToGroupResourceMapper implements Function<Group, GroupResource
     }
 
     private List<GroupResource.GroupResourceList> mapLists(List<ShoppingListId> lists) {
-        return lists.stream().map(shoppingListService::getById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
+        return lists.stream().map(shoppingListService::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 
     private GroupResource.GroupResourceList map(ShoppingList list) {

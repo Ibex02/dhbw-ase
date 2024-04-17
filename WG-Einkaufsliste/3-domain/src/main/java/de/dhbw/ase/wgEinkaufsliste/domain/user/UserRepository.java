@@ -7,6 +7,7 @@ import java.util.Optional;
 public interface UserRepository {
     Optional<User> findById(UserId id);
     Optional<User> findByEmail(String email);
+    User getById(UserId id) throws UserNotFoundException;
     User save(User user);
     void deleteById(UserId id);
 }

@@ -19,7 +19,7 @@ public class ShoppingList {
         this.id = id;
         this.groupId = groupId;
         this.name = name;
-        this.items = items;
+        this.items = new ArrayList<>(items);
 
         validate();
     }

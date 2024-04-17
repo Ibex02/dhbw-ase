@@ -8,6 +8,7 @@ import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Group {
@@ -28,8 +29,8 @@ public class Group {
     public Group(GroupId id, String name, List<UserId> usersIds, List<ShoppingListId> listIds) {
         this.id = id;
         this.name = name;
-        this.usersIds = usersIds;
-        this.listIds = listIds;
+        this.usersIds = new ArrayList<>(usersIds);
+        this.listIds = new ArrayList<>(listIds);
 
         validate();
     }
@@ -85,7 +86,7 @@ public class Group {
     private void validate() {
         Validate.notNull(id, "");
         Validate.notBlank(name);
-        Validate.notEmpty(usersIds);
+        Validate.notNull(usersIds, "");
         Validate.notNull(listIds, "");
     }
 }

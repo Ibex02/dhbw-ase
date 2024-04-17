@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-
     private final UserId id;
     private final String email;
     private final String passwordHash;
@@ -21,7 +20,7 @@ public class User {
         this.email = email;
         this.passwordHash = passwordHash;
         this.name = name;
-        this.groupIds = groupIds;
+        this.groupIds = new ArrayList<>(groupIds);
 
         validate();
     }

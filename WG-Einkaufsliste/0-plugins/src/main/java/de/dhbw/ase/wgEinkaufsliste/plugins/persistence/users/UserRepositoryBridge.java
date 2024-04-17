@@ -3,6 +3,7 @@ package de.dhbw.ase.wgEinkaufsliste.plugins.persistence.users;
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserRecordToUserMapper;
 import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserToUserRecordMapper;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,11 @@ public class UserRepositoryBridge implements UserRepository {
     public Optional<User> findByEmail(String email) {
         var record = repository.findUserByEmail(email);
         return record.map(mapFromRecord);
+    }
+
+    @Override
+    public User getById(UserId id) throws UserNotFoundException {
+        return findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Override

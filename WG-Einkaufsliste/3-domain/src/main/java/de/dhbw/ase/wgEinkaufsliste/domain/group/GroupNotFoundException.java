@@ -1,4 +1,4 @@
-package de.dhbw.ase.wgEinkaufsliste.application.group;
+package de.dhbw.ase.wgEinkaufsliste.domain.group;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 
