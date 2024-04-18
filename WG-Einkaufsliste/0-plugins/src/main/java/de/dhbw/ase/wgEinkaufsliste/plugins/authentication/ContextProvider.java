@@ -10,12 +10,6 @@ public class ContextProvider implements CurrentUserProvider {
 
     public CustomUserDetails getUserDetails() {
         return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-//        if (!(principal instanceof CustomUserDetails userDetails)) {
-//            throw new Exception();
-//        }
-
-//        return userDetails;
     }
 
     @Override
