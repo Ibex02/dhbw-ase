@@ -1,15 +1,14 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListResource;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.resource.ShoppingListResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListToShoppingListResourceMapper;
 import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListManagementService;
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
-import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.ChangeShoppingListNameRequest;
-import de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList.request.CreateShoppingListRequest;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.request.ChangeShoppingListNameRequest;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.request.CreateShoppingListRequest;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class ShoppingListController {
     @ApiResponse(responseCode = "400", content = @Content)
     public ResponseEntity<List<ShoppingListResource>> getLists(@RequestParam String groupId) {
         try {
-            var lists = shoppingListService.getAll(new GroupId(groupId));
+            var lists = shoppingListService.getAllForGroup(new GroupId(groupId));
             var resources = lists.stream().map(mapToResource).toList();
 
             return ResponseEntity.ok(resources);

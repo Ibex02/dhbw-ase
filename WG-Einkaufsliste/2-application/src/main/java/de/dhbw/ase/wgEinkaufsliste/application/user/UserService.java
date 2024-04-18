@@ -1,11 +1,14 @@
 package de.dhbw.ase.wgEinkaufsliste.application.user;
 
-import de.dhbw.ase.wgEinkaufsliste.application.authentication.PasswordEncoder;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupUserService;
+import de.dhbw.ase.wgEinkaufsliste.application.group.event.GroupCreatedEvent;
+import de.dhbw.ase.wgEinkaufsliste.application.group.event.GroupDeletedEvent;
+import de.dhbw.ase.wgEinkaufsliste.application.user.command.CreateUserCommand;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -32,7 +35,11 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User create(String email, String password, String name) throws UserAlreadyExistsException {
+    public User create(CreateUserCommand command) throws UserAlreadyExistsException {
+        var email = command.email();
+        var password = command.password();
+        var name = command.name();
+
         var existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException(email);
@@ -53,5 +60,19 @@ public class UserService {
     public User changeName(User user, String newName) {
         user.setName(newName);
         return userRepository.save(user);
+    }
+
+    @EventListener
+    public void handleGroupCreated(GroupCreatedEvent event) {
+    }
+
+    @EventListener
+    public void handleGroupDeleted(GroupDeletedEvent event) {
+        var group = event.getGroup();
+        var users = group.getUsersIds().stream().map(this::findById).filter(Optional::isPresent).map(Optional::get).toList();
+        for (var user : users) {
+            user.removeFromGroup(group.getId());
+            userRepository.save(user);
+        }
     }
 }

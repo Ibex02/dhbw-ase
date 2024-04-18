@@ -14,11 +14,13 @@ import java.util.Optional;
 public class GroupManagementService {
     private final GroupRepository groupRepository;
     private final ShoppingListRepository shoppingListRepository;
+    private final GroupEventManager eventManager;
 
     @Autowired
-    public GroupManagementService(GroupRepository groupRepository, ShoppingListRepository shoppingListRepository) {
+    public GroupManagementService(GroupRepository groupRepository, ShoppingListRepository shoppingListRepository, GroupEventManager eventManager) {
         this.groupRepository = groupRepository;
         this.shoppingListRepository = shoppingListRepository;
+        this.eventManager = eventManager;
     }
 
     public Optional<Group> findById(GroupId id) {
@@ -26,8 +28,9 @@ public class GroupManagementService {
     }
 
     public Group create(String name) {
-        Group group = new Group(name);
-        return groupRepository.save(group);
+        var group = groupRepository.save(new Group(name));
+        eventManager.raiseGroupCreated(group, this);
+        return group;
     }
 
     public Group changeName(Group group, String newName) {
@@ -43,6 +46,7 @@ public class GroupManagementService {
     public void delete(Group group) {
         group.getListIds().forEach(shoppingListRepository::deleteById);
         groupRepository.deleteById(group.getId());
+        eventManager.raiseGroupDeleted(group, this);
     }
 
     public void delete(GroupId id) throws GroupNotFoundException {

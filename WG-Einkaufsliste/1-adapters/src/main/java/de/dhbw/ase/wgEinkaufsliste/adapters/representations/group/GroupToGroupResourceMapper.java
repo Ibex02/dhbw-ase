@@ -1,5 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.representations.group;
 
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.resource.GroupResource;
 import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListManagementService;
 import de.dhbw.ase.wgEinkaufsliste.application.user.UserService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
@@ -10,6 +11,7 @@ import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -39,15 +41,15 @@ public class GroupToGroupResourceMapper implements Function<Group, GroupResource
         return new GroupResource(id, group.getName(), users, shoppingLists);
     }
 
-    private List<GroupResource.GroupResourceUser> mapUsers(List<UserId> lists) {
-        return lists.stream().map(userService::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
+    private List<GroupResource.GroupResourceUser> mapUsers(Collection<UserId> users) {
+        return users.stream().map(userService::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 
     private GroupResource.GroupResourceUser map(User user) {
         return new GroupResource.GroupResourceUser(user.getId().value(), user.getName());
     }
 
-    private List<GroupResource.GroupResourceList> mapLists(List<ShoppingListId> lists) {
+    private List<GroupResource.GroupResourceList> mapLists(Collection<ShoppingListId> lists) {
         return lists.stream().map(shoppingListService::findById).filter(Optional::isPresent).map(x -> map(x.get())).toList();
     }
 

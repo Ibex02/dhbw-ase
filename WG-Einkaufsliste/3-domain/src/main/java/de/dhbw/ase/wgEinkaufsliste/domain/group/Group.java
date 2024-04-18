@@ -1,23 +1,19 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.group;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
-import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.apache.commons.lang3.Validate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class Group {
 
     private final GroupId id;
     private String name;
 
-    private List<UserId> usersIds = new ArrayList<>();
-    private List<ShoppingListId> listIds = new ArrayList<>();
+    private Set<UserId> usersIds = new HashSet<>();
+    private Set<ShoppingListId> listIds = new HashSet<>();
 
     public Group(String name) {
         this.id = new GroupId();
@@ -26,11 +22,11 @@ public class Group {
         validate();
     }
 
-    public Group(GroupId id, String name, List<UserId> usersIds, List<ShoppingListId> listIds) {
+    public Group(GroupId id, String name, Collection<UserId> usersIds, Collection<ShoppingListId> listIds) {
         this.id = id;
         this.name = name;
-        this.usersIds = new ArrayList<>(usersIds);
-        this.listIds = new ArrayList<>(listIds);
+        this.usersIds = new HashSet<>(usersIds);
+        this.listIds = new HashSet<>(listIds);
 
         validate();
     }
@@ -41,52 +37,40 @@ public class Group {
     public String getName() {
         return name;
     }
+    public Collection<ShoppingListId> getListIds() {
+        return listIds;
+    }
+    public Collection<UserId> getUsersIds() {
+        return usersIds;
+    }
 
     public void setName(String name) {
         Validate.notBlank(name);
-
         this.name = name;
     }
 
-    public List<UserId> getUsersIds() {
-        return usersIds;
+    public void addUser(UserId id) {
+        usersIds.add(id);
     }
-    public List<ShoppingListId> getListIds() {
-        return listIds;
-    }
-
-    public void addUser(User user) {
-        var userGroupIds = user.getGroupIds();
-        if (!userGroupIds.contains(id)) {
-            user.getGroupIds().add(id);
-        }
-        if (!usersIds.contains(user.getId())) {
-            usersIds.add(user.getId());
-        }
+    public void removeUser(UserId id) {
+        usersIds.remove(id);
     }
 
-    public boolean removeUser(User user) {
-        return user.getGroupIds().remove(id) & usersIds.remove(user.getId());
+    public void addList(ShoppingListId id) {
+        listIds.add(id);
+    }
+    public void removeList(ShoppingListId id) {
+        listIds.remove(id);
     }
 
     public boolean isEmpty() {
         return usersIds.isEmpty();
     }
 
-    public void addList(ShoppingList list) {
-        if (!listIds.contains(list.getId())) {
-            listIds.add(list.getId());
-        }
-    }
-
-    public boolean removeList(ShoppingList list) {
-        return listIds.remove(list.getId());
-    }
-
     private void validate() {
-        Validate.notNull(id, "");
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(usersIds);
+        Objects.requireNonNull(listIds);
         Validate.notBlank(name);
-        Validate.notNull(usersIds, "");
-        Validate.notNull(listIds, "");
     }
 }

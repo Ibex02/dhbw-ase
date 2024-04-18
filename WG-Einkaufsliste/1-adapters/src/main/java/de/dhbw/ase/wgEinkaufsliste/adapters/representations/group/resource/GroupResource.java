@@ -1,4 +1,4 @@
-package de.dhbw.ase.wgEinkaufsliste.adapters.representations.group;
+package de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.resource;
 
 import java.util.List;
 

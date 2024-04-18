@@ -1,7 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.application.shoppingList;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
@@ -29,7 +28,7 @@ public class ShoppingListManagementService {
         return shoppingListRepository.findById(id);
     }
 
-    public List<ShoppingList> getAll(GroupId groupId) throws GroupNotFoundException {
+    public List<ShoppingList> getAllForGroup(GroupId groupId) throws GroupNotFoundException {
         var group = groupRepository.getById(groupId);
 
         var result = new ArrayList<ShoppingList>();
@@ -58,7 +57,7 @@ public class ShoppingListManagementService {
         if (groupOpt.isPresent()) {
             var group = groupOpt.get();
 
-            group.removeList(list);
+            group.removeList(list.getId());
             groupRepository.save(group);
         }
 

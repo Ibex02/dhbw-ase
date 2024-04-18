@@ -1,6 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.representations.user;
 
 
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.user.resource.UserResource;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import org.springframework.stereotype.Component;
 

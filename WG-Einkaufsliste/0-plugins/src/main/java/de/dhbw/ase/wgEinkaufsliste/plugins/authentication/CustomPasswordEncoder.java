@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomPasswordEncoder implements PasswordEncoder, de.dhbw.ase.wgEinkaufsliste.application.authentication.PasswordEncoder {
+public class CustomPasswordEncoder implements PasswordEncoder, de.dhbw.ase.wgEinkaufsliste.application.user.PasswordEncoder {
 
     private final PasswordEncoder encoder;
 

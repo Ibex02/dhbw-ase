@@ -1,14 +1,13 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListItemResource;
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListItemResourceToShoppingListItemMapper;
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListResource;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.AddItemRequestToAddItemCommandMapper;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.resource.ShoppingListResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListToShoppingListResourceMapper;
 import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListItemService;
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.request.AddShoppingListItemRequest;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +20,24 @@ public class ShoppingListItemController {
 
     private final ShoppingListItemService shoppingListService;
     private final ShoppingListToShoppingListResourceMapper mapToResource;
-    private final ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource;
+    private final AddItemRequestToAddItemCommandMapper mapRequestToCommand;
 
     @Autowired
     public ShoppingListItemController(
             ShoppingListToShoppingListResourceMapper mapToResource,
-            ShoppingListItemResourceToShoppingListItemMapper mapItemFromResource,
-            ShoppingListItemService shoppingListService) {
+            ShoppingListItemService shoppingListService, AddItemRequestToAddItemCommandMapper mapRequestToCommand) {
         this.mapToResource = mapToResource;
-        this.mapItemFromResource = mapItemFromResource;
         this.shoppingListService = shoppingListService;
+        this.mapRequestToCommand = mapRequestToCommand;
     }
 
     @PostMapping("")
     @ApiResponse(responseCode = "200")
     @ApiResponse(responseCode = "404", content = @Content)
-    public ResponseEntity<ShoppingListResource> addItem(@PathVariable String listId, @RequestBody ShoppingListItemResource item) {
+    public ResponseEntity<ShoppingListResource> addOrUpdateItem(@PathVariable String listId, @RequestBody AddShoppingListItemRequest request) {
         try {
-            var listItem = mapItemFromResource.apply(item);
-            var shoppingList = shoppingListService.addOrUpdateItem(new ShoppingListId(listId), listItem);
+            var command = mapRequestToCommand.apply(request);
+            var shoppingList = shoppingListService.addItem(new ShoppingListId(listId), command);
             var resource = mapToResource.apply(shoppingList);
 
             return ResponseEntity.ok(resource);

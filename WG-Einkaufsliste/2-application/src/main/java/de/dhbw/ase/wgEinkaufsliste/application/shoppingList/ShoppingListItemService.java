@@ -1,9 +1,11 @@
 package de.dhbw.ase.wgEinkaufsliste.application.shoppingList;
 
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.command.AddShoppingListItemCommand;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Quantity;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +21,20 @@ public class ShoppingListItemService {
         this.shoppingListRepository = shoppingListRepository;
     }
 
-    public ShoppingList addOrUpdateItem(ShoppingList list, ShoppingListItem item) {
+    public ShoppingList addItem(ShoppingList list, AddShoppingListItemCommand command) {
+        var item = new ShoppingListItem(command.name(), new Quantity(command.quantity()));
         list.addOrUpdateItem(item);
         return shoppingListRepository.save(list);
     }
 
     public ShoppingList deleteItem(ShoppingList list, ShoppingListItemId itemId) {
-        list.removeItemById(itemId);
+        list.removeItem(itemId);
         return shoppingListRepository.save(list);
     }
 
-    public ShoppingList addOrUpdateItem(ShoppingListId id, ShoppingListItem item) throws ShoppingListNotFoundException {
+    public ShoppingList addItem(ShoppingListId id, AddShoppingListItemCommand command) throws ShoppingListNotFoundException {
         var list = shoppingListRepository.getById(id);
-        return addOrUpdateItem(list, item);
+        return addItem(list, command);
     }
 
     public ShoppingList deleteItem(ShoppingListId id, ShoppingListItemId itemId) throws ShoppingListNotFoundException {

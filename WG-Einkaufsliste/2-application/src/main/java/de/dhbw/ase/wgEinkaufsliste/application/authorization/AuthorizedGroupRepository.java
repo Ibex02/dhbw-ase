@@ -1,6 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.application.authorization;
 
-import de.dhbw.ase.wgEinkaufsliste.application.authentication.UserContextProvider;
+import de.dhbw.ase.wgEinkaufsliste.application.user.CurrentUserProvider;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
@@ -13,9 +13,9 @@ import java.util.Optional;
 public class AuthorizedGroupRepository {
 
     private final GroupRepository groupRepository;
-    private final UserContextProvider contextProvider;
+    private final CurrentUserProvider contextProvider;
 
-    public AuthorizedGroupRepository(GroupRepository groupRepository, UserContextProvider contextProvider) {
+    public AuthorizedGroupRepository(GroupRepository groupRepository, CurrentUserProvider contextProvider) {
         this.groupRepository = groupRepository;
         this.contextProvider = contextProvider;
     }

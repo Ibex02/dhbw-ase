@@ -30,34 +30,10 @@ public class ShoppingListService {
     }
 
     public List<ShoppingList> getAll(GroupId groupId) throws GroupNotFoundException {
-        return managementService.getAll(groupId);
+        return managementService.getAllForGroup(groupId);
     }
 
     public ShoppingList create(GroupId groupId, String name) throws GroupNotFoundException {
         return managementService.create(groupId, name);
-    }
-
-    public void delete(ShoppingListId id) throws ShoppingListNotFoundException {
-        managementService.delete(id);
-    }
-
-    public ShoppingList changeName(ShoppingListId id, String newName) throws ShoppingListNotFoundException {
-        return managementService.changeName(id, newName);
-    }
-
-    public ShoppingList addOrUpdateItem(ShoppingList list, ShoppingListItem item) {
-        return itemService.addOrUpdateItem(list, item);
-    }
-
-    public ShoppingList addOrUpdateItem(ShoppingListId id, ShoppingListItem item) throws ShoppingListNotFoundException {
-        return itemService.addOrUpdateItem(id, item);
-    }
-
-    public ShoppingList deleteItem(ShoppingList list, ShoppingListItemId itemId) {
-        return itemService.deleteItem(list, itemId);
-    }
-
-    public ShoppingList deleteItem(ShoppingListId id, ShoppingListItemId itemId) throws ShoppingListNotFoundException {
-        return itemService.deleteItem(id, itemId);
     }
 }

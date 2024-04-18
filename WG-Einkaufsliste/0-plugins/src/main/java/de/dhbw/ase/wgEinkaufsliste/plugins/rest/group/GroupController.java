@@ -1,14 +1,14 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.rest.group;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupResource;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.resource.GroupResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupToGroupResourceMapper;
-import de.dhbw.ase.wgEinkaufsliste.application.authentication.UserContextProvider;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.request.ChangeGroupNameRequest;
+import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.request.CreateGroupRequest;
+import de.dhbw.ase.wgEinkaufsliste.application.user.CurrentUserProvider;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
-import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.ChangeGroupNameRequest;
-import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.CreateGroupRequest;
+import de.dhbw.ase.wgEinkaufsliste.plugins.rest.group.request.*;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,13 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "${apiPrefix}/groups")
 public class GroupController {
+
     private final GroupService groupService;
-    private final UserContextProvider context;
+    private final CurrentUserProvider context;
     private final GroupToGroupResourceMapper mapToResource;
 
     @Autowired
-    public GroupController(GroupService groupService, UserContextProvider context, GroupToGroupResourceMapper mapToResource) {
+    public GroupController(GroupService groupService, CurrentUserProvider context, GroupToGroupResourceMapper mapToResource) {
         this.groupService = groupService;
         this.context = context;
         this.mapToResource = mapToResource;
@@ -45,7 +46,7 @@ public class GroupController {
     @GetMapping("")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<GroupResource>> getAllGroups() {
-        User user = context.getUser();
+        var user = context.getUser();
         var groups = groupService.getAllForUser(user).stream().map(mapToResource).toList();
 
         return ResponseEntity.ok(groups);
@@ -54,7 +55,6 @@ public class GroupController {
     @PostMapping("")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<GroupResource> createGroup(@RequestBody CreateGroupRequest request) {
-
         var user = context.getUser();
         var group = groupService.createWithUser(request.name(), user);
         var resource = mapToResource.apply(group);

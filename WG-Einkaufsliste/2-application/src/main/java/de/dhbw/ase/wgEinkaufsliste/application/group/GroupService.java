@@ -6,49 +6,22 @@ import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class GroupService {
-    private final GroupManagementService groupManagementService;
-    private final GroupUserService groupUserService;
+public interface GroupService {
+    Optional<Group> findById(GroupId id);
 
-    @Autowired
-    public GroupService(GroupManagementService groupManagementService, GroupUserService groupUserService) {
-        this.groupManagementService = groupManagementService;
-        this.groupUserService = groupUserService;
-    }
+    List<Group> getAllForUser(User user);
 
-    public Optional<Group> findById(GroupId id) {
-        return groupManagementService.findById(id);
-    }
+    Group createWithUser(String name, User user);
 
-    public List<Group> getAllForUser(User user) {
-        return groupUserService.getAllForUser(user);
-    }
+    Group changeName(GroupId id, String newName) throws GroupNotFoundException;
 
-    public Group createWithUser(String name, User user) {
-        var group = groupManagementService.create(name);
-        return groupUserService.addUser(group, user);
-    }
+    void delete(GroupId id) throws GroupNotFoundException;
 
-    public Group changeName(GroupId id, String newName) throws GroupNotFoundException {
-        return groupManagementService.changeName(id, newName);
-    }
+    Group addUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException;
 
-    public void delete(GroupId id) throws GroupNotFoundException {
-        groupManagementService.delete(id);
-    }
-
-    public Group addUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException {
-        return groupUserService.addUser(groupId, userId);
-    }
-
-    public Group removeUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException {
-        return groupUserService.removeUser(groupId, userId);
-    }
+    Group removeUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException;
 }

@@ -5,22 +5,21 @@ import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import de.dhbw.ase.wgEinkaufsliste.domain.validator.EmailValidator;
 import org.apache.commons.lang3.Validate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class User {
     private final UserId id;
     private final String email;
     private final String passwordHash;
     private String name;
-    private List<GroupId> groupIds = new ArrayList<>();
+    private Set<GroupId> groupIds = new HashSet<>();
 
-    public User(UserId id, String email, String passwordHash, String name, List<GroupId> groupIds) {
+    public User(UserId id, String email, String passwordHash, String name, Collection<GroupId> groupIds) {
         this.id = id;
         this.email = email;
         this.passwordHash = passwordHash;
         this.name = name;
-        this.groupIds = new ArrayList<>(groupIds);
+        this.groupIds = new HashSet<>(groupIds);
 
         validate();
     }
@@ -46,20 +45,25 @@ public class User {
     public String getName() {
         return name;
     }
-
     public List<GroupId> getGroupIds() {
-        return groupIds;
+        return groupIds.stream().toList();
     }
 
     public void setName(String newName) {
         Validate.notBlank(newName);
-
         this.name = newName;
     }
 
+    public void addToGroup(GroupId id) {
+        groupIds.add(id);
+    }
+    public void removeFromGroup(GroupId id) {
+        groupIds.remove(id);
+    }
+
     private void validate() {
-        Validate.notNull(id, "");
-        Validate.notNull(groupIds, "");
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(groupIds);
         Validate.notBlank(email);
         Validate.notBlank(name);
         Validate.notBlank(passwordHash);

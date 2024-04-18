@@ -6,20 +6,20 @@ import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListItemId;
 import org.apache.commons.lang3.Validate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ShoppingList {
     private final ShoppingListId id;
     private final GroupId groupId;
     private String name;
-    private List<ShoppingListItem> items = new ArrayList<>();
+    private Map<ShoppingListItemId, ShoppingListItem> items = new HashMap<>();
 
-    public ShoppingList(ShoppingListId id, GroupId groupId, String name, List<ShoppingListItem> items) {
+    public ShoppingList(ShoppingListId id, GroupId groupId, String name, Collection<ShoppingListItem> items) {
         this.id = id;
         this.groupId = groupId;
         this.name = name;
-        this.items = new ArrayList<>(items);
+        this.items = items.stream().collect(Collectors.toMap(ShoppingListItem::id, x -> x));
 
         validate();
     }
@@ -29,7 +29,7 @@ public class ShoppingList {
         this.id = new ShoppingListId();
         this.name = name;
 
-        group.addList(this);
+        group.addList(getId());
         this.groupId = group.getId();
 
         validate();
@@ -49,25 +49,24 @@ public class ShoppingList {
     }
 
     public void addOrUpdateItem(ShoppingListItem item) {
-        removeItemById(item.id());
-        items.add(item);
+        items.put(item.id(), item);
     }
 
-    public void removeItemById(ShoppingListItemId itemId) {
-        items.removeIf(x -> x.id().equals(itemId));
+    public void removeItem(ShoppingListItemId id) {
+        items.remove(id);
     }
 
     public GroupId getGroupId() {
         return groupId;
     }
 
-    public List<ShoppingListItem> getItems() {
-        return items;
+    public Collection<ShoppingListItem> getItems() {
+        return items.values();
     }
 
     private void validate() {
-        Validate.notNull(id, "");
-        Validate.notNull(groupId, "");
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(groupId);
         Validate.notBlank(name);
     }
 }

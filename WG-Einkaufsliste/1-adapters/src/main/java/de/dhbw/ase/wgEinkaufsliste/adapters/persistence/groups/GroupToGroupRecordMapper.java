@@ -5,6 +5,7 @@ import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -24,11 +25,11 @@ public class GroupToGroupRecordMapper implements Function<Group, GroupRecord> {
         return new GroupRecord(id, group.getName(), userIds, listIds);
     }
 
-    private List<String> mapUserIds(List<UserId> ids) {
+    private List<String> mapUserIds(Collection<UserId> ids) {
         return ids.stream().map(UserId::value).toList();
     }
 
-    private List<String> mapListIds(List<ShoppingListId> ids) {
+    private List<String> mapListIds(Collection<ShoppingListId> ids) {
         return ids.stream().map(ShoppingListId::value).toList();
     }
 }
