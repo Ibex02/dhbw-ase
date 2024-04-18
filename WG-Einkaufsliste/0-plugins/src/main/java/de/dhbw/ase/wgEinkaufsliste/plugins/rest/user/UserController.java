@@ -8,6 +8,7 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.representations.user.request.CreateU
 import de.dhbw.ase.wgEinkaufsliste.application.user.CurrentUserProvider;
 import de.dhbw.ase.wgEinkaufsliste.application.user.UserAlreadyExistsException;
 import de.dhbw.ase.wgEinkaufsliste.application.user.UserService;
+import de.dhbw.ase.wgEinkaufsliste.application.user.command.ChangeNameCommand;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -69,10 +70,9 @@ public class UserController {
     @PutMapping("/name")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<UserResource> changeName(@RequestBody ChangeUserNameRequest request) {
-        var user = context.getUser();
-
-        var updatedUser = userService.changeName(user, request.newName());
-        var resource = toResourceMapper.apply(updatedUser);
+        var command = new ChangeNameCommand(context.getUser(), request.newName());
+        var user = userService.changeName(command);
+        var resource = toResourceMapper.apply(user);
 
         return ResponseEntity.ok(resource);
     }

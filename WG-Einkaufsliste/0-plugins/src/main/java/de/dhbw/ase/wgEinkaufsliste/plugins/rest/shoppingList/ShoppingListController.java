@@ -2,7 +2,7 @@ package de.dhbw.ase.wgEinkaufsliste.plugins.rest.shoppingList;
 
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.resource.ShoppingListResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.ShoppingListToShoppingListResourceMapper;
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListManagementService;
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
@@ -23,13 +23,13 @@ import java.util.List;
 @RequestMapping(value = "${apiPrefix}/lists")
 public class ShoppingListController {
 
-    private final ShoppingListManagementService shoppingListService;
+    private final ShoppingListService shoppingListService;
     private final ShoppingListToShoppingListResourceMapper mapToResource;
 
     @Autowired
     public ShoppingListController(
             ShoppingListToShoppingListResourceMapper mapToResource,
-            ShoppingListManagementService shoppingListService) {
+            ShoppingListService shoppingListService) {
         this.mapToResource = mapToResource;
         this.shoppingListService = shoppingListService;
     }

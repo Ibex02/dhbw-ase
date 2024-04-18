@@ -2,8 +2,6 @@ package de.dhbw.ase.wgEinkaufsliste.application.group;
 
 import de.dhbw.ase.wgEinkaufsliste.application.group.event.GroupCreatedEvent;
 import de.dhbw.ase.wgEinkaufsliste.application.group.event.GroupDeletedEvent;
-import de.dhbw.ase.wgEinkaufsliste.application.group.event.UserAddedEvent;
-import de.dhbw.ase.wgEinkaufsliste.application.group.event.UserRemovedEvent;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +24,6 @@ public class GroupEventManager {
 
     public void raiseGroupDeleted(Group group, Object source) {
         var event = new GroupDeletedEvent(group, source);
-        applicationEventPublisher.publishEvent(event);
-    }
-
-    public void raiseUserAdded(Group group, User user, Object source) {
-        var event = new UserAddedEvent(group, user, source);
-        applicationEventPublisher.publishEvent(event);
-    }
-
-    public void raiseUserRemoved(Group group, User user, Object source) {
-        var event = new UserRemovedEvent(group, user, source);
         applicationEventPublisher.publishEvent(event);
     }
 }

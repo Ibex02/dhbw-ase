@@ -2,19 +2,21 @@ package de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList;
 
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.shoppingList.request.AddShoppingListItemRequest;
 import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.command.AddShoppingListItemCommand;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
 @Component
-public class AddItemRequestToAddItemCommandMapper implements Function<AddShoppingListItemRequest, AddShoppingListItemCommand> {
+public class AddItemRequestToAddItemCommandMapper implements Function<Pair<ShoppingListId, AddShoppingListItemRequest>, AddShoppingListItemCommand> {
 
     @Override
-    public AddShoppingListItemCommand apply(AddShoppingListItemRequest request) {
-        return map(request);
+    public AddShoppingListItemCommand apply(Pair<ShoppingListId, AddShoppingListItemRequest> pair) {
+        return map(pair.getFirst(), pair.getSecond());
     }
 
-    private AddShoppingListItemCommand map(AddShoppingListItemRequest request) {
-        return new AddShoppingListItemCommand(request.name(), request.quantity());
+    private AddShoppingListItemCommand map(ShoppingListId listId, AddShoppingListItemRequest request) {
+        return new AddShoppingListItemCommand(listId, request.name(), request.quantity());
     }
 }

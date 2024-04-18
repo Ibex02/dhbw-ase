@@ -1,7 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.adapters.representations.group;
 
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.resource.GroupResource;
-import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListManagementService;
+import de.dhbw.ase.wgEinkaufsliste.application.shoppingList.ShoppingListService;
 import de.dhbw.ase.wgEinkaufsliste.application.user.UserService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingList;
@@ -20,10 +20,10 @@ import java.util.function.Function;
 public class GroupToGroupResourceMapper implements Function<Group, GroupResource> {
 
     private final UserService userService;
-    private final ShoppingListManagementService shoppingListService;
+    private final ShoppingListService shoppingListService;
 
     @Autowired
-    public GroupToGroupResourceMapper(UserService userService, ShoppingListManagementService shoppingListService) {
+    public GroupToGroupResourceMapper(UserService userService, ShoppingListService shoppingListService) {
         this.userService = userService;
         this.shoppingListService = shoppingListService;
     }

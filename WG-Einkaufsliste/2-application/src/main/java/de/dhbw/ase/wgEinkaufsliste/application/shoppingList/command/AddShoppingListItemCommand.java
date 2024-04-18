@@ -1,4 +1,5 @@
 package de.dhbw.ase.wgEinkaufsliste.application.shoppingList.command;
 
-public record AddShoppingListItemCommand(String name, int quantity) {
-}
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
+
+public record AddShoppingListItemCommand(ShoppingListId listId, String name, int quantity) { }

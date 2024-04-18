@@ -1,15 +1,13 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
-import de.dhbw.ase.wgEinkaufsliste.application.group.event.GroupCreatedEvent;
-import de.dhbw.ase.wgEinkaufsliste.application.group.event.GroupDeletedEvent;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.AddUserCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.RemoveUserCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.group.event.*;
 import de.dhbw.ase.wgEinkaufsliste.application.user.CurrentUserProvider;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -31,10 +29,8 @@ public class GroupUserService {
     }
 
     public List<Group> getAllForUser(User user) {
-        return user.getGroupIds().stream()
-                .map(groupRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get).toList();
+        return user.getGroupIds().stream().map(groupRepository::findById)
+                .filter(Optional::isPresent).map(Optional::get).toList();
     }
 
     public Group addUserToGroup(Group group, User user) {
@@ -45,7 +41,7 @@ public class GroupUserService {
         return groupRepository.save(group);
     }
 
-    public Group removeUser(Group group, User user) {
+    public Group removeUserFromGroup(Group group, User user) {
         group.removeUser(user.getId());
         user.removeFromGroup(group.getId());
 
@@ -59,16 +55,16 @@ public class GroupUserService {
         return groupRepository.save(group);
     }
 
-    public Group addUserToGroup(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
-        var group = groupRepository.getById(groupId);
-        var user = userRepository.getById(userId);
+    public Group addUserToGroup(AddUserCommand command) throws GroupNotFoundException, UserNotFoundException {
+        var group = groupRepository.getById(command.groupId());
+        var user = userRepository.getById(command.userId());
         return addUserToGroup(group, user);
     }
 
-    public Group removeUser(GroupId groupId, UserId userId) throws GroupNotFoundException, UserNotFoundException {
-        var group = groupRepository.getById(groupId);
-        var user = userRepository.getById(userId);
-        return removeUser(group, user);
+    public Group removeUserFromGroup(RemoveUserCommand command) throws GroupNotFoundException, UserNotFoundException {
+        var group = groupRepository.getById(command.groupId());
+        var user = userRepository.getById(command.userId());
+        return removeUserFromGroup(group, user);
     }
 
     @EventListener

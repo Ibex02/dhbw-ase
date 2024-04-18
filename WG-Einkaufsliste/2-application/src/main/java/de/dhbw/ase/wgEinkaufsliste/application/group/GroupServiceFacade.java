@@ -1,5 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.AddUserCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.RemoveUserCommand;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
@@ -51,12 +53,12 @@ public class GroupServiceFacade implements GroupService {
     }
 
     @Override
-    public Group addUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException {
-        return groupUserService.addUserToGroup(groupId, userId);
+    public Group addUser(AddUserCommand command) throws UserNotFoundException, GroupNotFoundException {
+        return groupUserService.addUserToGroup(command);
     }
 
     @Override
-    public Group removeUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException {
-        return groupUserService.removeUser(groupId, userId);
+    public Group removeUser(RemoveUserCommand command) throws UserNotFoundException, GroupNotFoundException {
+        return groupUserService.removeUserFromGroup(command);
     }
 }

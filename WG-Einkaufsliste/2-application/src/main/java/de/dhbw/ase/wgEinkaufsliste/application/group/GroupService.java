@@ -1,5 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.AddUserCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.RemoveUserCommand;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
@@ -21,7 +23,7 @@ public interface GroupService {
 
     void delete(GroupId id) throws GroupNotFoundException;
 
-    Group addUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException;
+    Group addUser(AddUserCommand command) throws UserNotFoundException, GroupNotFoundException;
 
-    Group removeUser(GroupId groupId, UserId userId) throws UserNotFoundException, GroupNotFoundException;
+    Group removeUser(RemoveUserCommand command) throws UserNotFoundException, GroupNotFoundException;
 }

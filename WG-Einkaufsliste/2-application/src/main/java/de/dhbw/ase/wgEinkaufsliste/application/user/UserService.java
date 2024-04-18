@@ -1,14 +1,12 @@
 package de.dhbw.ase.wgEinkaufsliste.application.user;
 
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupUserService;
-import de.dhbw.ase.wgEinkaufsliste.application.group.event.GroupCreatedEvent;
-import de.dhbw.ase.wgEinkaufsliste.application.group.event.GroupDeletedEvent;
+import de.dhbw.ase.wgEinkaufsliste.application.user.command.ChangeNameCommand;
 import de.dhbw.ase.wgEinkaufsliste.application.user.command.CreateUserCommand;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -36,43 +34,26 @@ public class UserService {
     }
 
     public User create(CreateUserCommand command) throws UserAlreadyExistsException {
-        var email = command.email();
-        var password = command.password();
-        var name = command.name();
-
-        var existingUser = userRepository.findByEmail(email);
-        if (existingUser.isPresent()) {
-            throw new UserAlreadyExistsException(email);
+        var userOpt = userRepository.findByEmail(command.email());
+        if (userOpt.isPresent()) {
+            throw new UserAlreadyExistsException(command.email());
         }
 
-        String encoded = encoder.encode(password);
-        var user = new User(email, encoded, name);
+        String encoded = encoder.encode(command.password());
+        var user = new User(command.email(), encoded, command.name());
 
         userRepository.save(user);
         return user;
     }
 
     public void delete(User user) {
-        groupService.getAllForUser(user).forEach(x -> groupService.removeUser(x, user));
+        groupService.getAllForUser(user).forEach(x -> groupService.removeUserFromGroup(x, user));
         userRepository.deleteById(user.getId());
     }
 
-    public User changeName(User user, String newName) {
-        user.setName(newName);
+    public User changeName(ChangeNameCommand command) {
+        var user = command.user();
+        user.setName(command.newName());
         return userRepository.save(user);
-    }
-
-    @EventListener
-    public void handleGroupCreated(GroupCreatedEvent event) {
-    }
-
-    @EventListener
-    public void handleGroupDeleted(GroupDeletedEvent event) {
-        var group = event.getGroup();
-        var users = group.getUsersIds().stream().map(this::findById).filter(Optional::isPresent).map(Optional::get).toList();
-        for (var user : users) {
-            user.removeFromGroup(group.getId());
-            userRepository.save(user);
-        }
     }
 }

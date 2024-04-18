@@ -3,6 +3,8 @@ package de.dhbw.ase.wgEinkaufsliste.plugins.rest.group;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.resource.GroupResource;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupToGroupResourceMapper;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupUserService;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.AddUserCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.RemoveUserCommand;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
@@ -32,7 +34,8 @@ public class GroupUserController {
     @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<GroupResource> addUser(@PathVariable String groupId, AddUserRequest request) {
         try {
-            var group = groupService.addUserToGroup(new GroupId(groupId), new UserId(request.userId()));
+            var command = new AddUserCommand(new GroupId(groupId), new UserId(request.userId()));
+            var group = groupService.addUserToGroup(command);
             var resource = mapToResource.apply(group);
 
             return ResponseEntity.ok(resource);
@@ -46,7 +49,8 @@ public class GroupUserController {
     @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<GroupResource> removeUser(@PathVariable String groupId, @PathVariable String userId) {
         try {
-            var group = groupService.removeUser(new GroupId(groupId), new UserId(userId));
+            var command = new RemoveUserCommand(new GroupId(groupId), new UserId(userId));
+            var group = groupService.removeUserFromGroup(command);
             var resource = mapToResource.apply(group);
 
             return ResponseEntity.ok(resource);
