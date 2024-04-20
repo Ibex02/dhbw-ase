@@ -1,14 +1,11 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
-import de.dhbw.ase.wgEinkaufsliste.application.group.command.AddUserCommand;
-import de.dhbw.ase.wgEinkaufsliste.application.group.command.RemoveUserCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.*;
 import de.dhbw.ase.wgEinkaufsliste.application.group.event.*;
 import de.dhbw.ase.wgEinkaufsliste.application.user.CurrentUserProvider;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.*;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.*;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -28,7 +25,7 @@ public class GroupUserService {
         this.currentUserProvider = currentUserProvider;
     }
 
-    public List<Group> getAllForUser(User user) {
+    public List<Group> findAllWidthUser(User user) {
         return user.getGroupIds().stream().map(groupRepository::findById)
                 .filter(Optional::isPresent).map(Optional::get).toList();
     }
@@ -53,6 +50,10 @@ public class GroupUserService {
         }
 
         return groupRepository.save(group);
+    }
+
+    public void removeUserFromAllGroup(User user) {
+
     }
 
     public Group addUserToGroup(AddUserCommand command) throws GroupNotFoundException, UserNotFoundException {

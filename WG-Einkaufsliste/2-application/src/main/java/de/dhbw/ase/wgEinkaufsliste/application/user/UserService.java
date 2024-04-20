@@ -1,8 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.application.user;
 
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupUserService;
-import de.dhbw.ase.wgEinkaufsliste.application.user.command.ChangeNameCommand;
-import de.dhbw.ase.wgEinkaufsliste.application.user.command.CreateUserCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.user.command.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
@@ -35,9 +34,7 @@ public class UserService {
 
     public User create(CreateUserCommand command) throws UserAlreadyExistsException {
         var userOpt = userRepository.findByEmail(command.email());
-        if (userOpt.isPresent()) {
-            throw new UserAlreadyExistsException(command.email());
-        }
+        if (userOpt.isPresent()) throw new UserAlreadyExistsException(command.email());
 
         String encoded = encoder.encode(command.password());
         var user = new User(command.email(), encoded, command.name());
@@ -47,7 +44,7 @@ public class UserService {
     }
 
     public void delete(User user) {
-        groupService.getAllForUser(user).forEach(x -> groupService.removeUserFromGroup(x, user));
+        groupService.findAllWidthUser(user).forEach(x -> groupService.removeUserFromGroup(x, user));
         userRepository.deleteById(user.getId());
     }
 

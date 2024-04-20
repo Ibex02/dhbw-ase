@@ -4,6 +4,7 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.resource.Group
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupToGroupResourceMapper;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.request.ChangeGroupNameRequest;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.request.CreateGroupRequest;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.ChangeNameCommand;
 import de.dhbw.ase.wgEinkaufsliste.application.user.CurrentUserProvider;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
@@ -78,7 +79,8 @@ public class GroupController {
     @ApiResponse(responseCode = "404", content = @Content)
     public ResponseEntity<GroupResource> changeName(@PathVariable String id, ChangeGroupNameRequest request) {
         try {
-            var group = groupService.changeName(new GroupId(id), request.newName());
+            var command = new ChangeNameCommand(new GroupId(id), request.newName());
+            var group = groupService.changeName(command);
             var resource = mapToResource.apply(group);
 
             return ResponseEntity.ok(resource);

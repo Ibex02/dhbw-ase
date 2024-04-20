@@ -1,5 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
@@ -29,28 +30,23 @@ public class GroupManagementService {
 
     public Group create(String name) {
         var group = groupRepository.save(new Group(name));
+
         eventManager.raiseGroupCreated(group, this);
         return group;
     }
 
-    public Group changeName(Group group, String newName) {
-        group.setName(newName);
+    public Group changeName(ChangeNameCommand command) throws GroupNotFoundException {
+        var group = groupRepository.getById(command.groupId());
+        group.setName(command.newName());
         return groupRepository.save(group);
-    }
-
-    public Group changeName(GroupId id, String newName) throws GroupNotFoundException {
-        var group = groupRepository.getById(id);
-        return changeName(group, newName);
-    }
-
-    public void delete(Group group) {
-        group.getListIds().forEach(shoppingListRepository::deleteById);
-        groupRepository.deleteById(group.getId());
-        eventManager.raiseGroupDeleted(group, this);
     }
 
     public void delete(GroupId id) throws GroupNotFoundException {
         var group = groupRepository.getById(id);
-        delete(group);
+
+        group.getListIds().forEach(shoppingListRepository::deleteById);
+        groupRepository.deleteById(group.getId());
+
+        eventManager.raiseGroupDeleted(group, this);
     }
 }

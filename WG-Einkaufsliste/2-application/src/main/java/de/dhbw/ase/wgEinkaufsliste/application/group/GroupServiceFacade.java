@@ -1,13 +1,13 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
 import de.dhbw.ase.wgEinkaufsliste.application.group.command.AddUserCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.ChangeNameCommand;
 import de.dhbw.ase.wgEinkaufsliste.application.group.command.RemoveUserCommand;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +33,7 @@ public class GroupServiceFacade implements GroupService {
 
     @Override
     public List<Group> getAllForUser(User user) {
-        return groupUserService.getAllForUser(user);
+        return groupUserService.findAllWidthUser(user);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class GroupServiceFacade implements GroupService {
     }
 
     @Override
-    public Group changeName(GroupId id, String newName) throws GroupNotFoundException {
-        return groupManagementService.changeName(id, newName);
+    public Group changeName(ChangeNameCommand command) throws GroupNotFoundException {
+        return groupManagementService.changeName(command);
     }
 
     @Override
