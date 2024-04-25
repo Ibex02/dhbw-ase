@@ -52,8 +52,8 @@ public class GroupUserService {
         return groupRepository.save(group);
     }
 
-    public void removeUserFromAllGroup(User user) {
-
+    public void removeUserFromAllGroups(User user) {
+        findAllWidthUser(user).forEach(x -> removeUserFromGroup(x, user));
     }
 
     public Group addUserToGroup(AddUserCommand command) throws GroupNotFoundException, UserNotFoundException {
