@@ -5,6 +5,7 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.GroupToGroupRe
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.request.ChangeGroupNameRequest;
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.group.request.CreateGroupRequest;
 import de.dhbw.ase.wgEinkaufsliste.application.group.command.ChangeNameCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.CreateGroupCommand;
 import de.dhbw.ase.wgEinkaufsliste.application.user.CurrentUserProvider;
 import de.dhbw.ase.wgEinkaufsliste.application.group.GroupService;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
@@ -56,7 +57,8 @@ public class GroupController {
     @ApiResponse(responseCode = "200")
     public ResponseEntity<GroupResource> createGroup(@RequestBody CreateGroupRequest request) {
         var user = context.getUser();
-        var group = groupService.createWithUser(request.name(), user);
+        var command = new CreateGroupCommand(request.name(), user);
+        var group = groupService.create(command);
         var resource = mapToResource.apply(group);
 
         return ResponseEntity.ok(resource);

@@ -1,13 +1,11 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
 import de.dhbw.ase.wgEinkaufsliste.application.group.command.*;
-import de.dhbw.ase.wgEinkaufsliste.application.group.event.*;
 import de.dhbw.ase.wgEinkaufsliste.application.user.CurrentUserProvider;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -52,10 +50,6 @@ public class GroupUserService {
         return groupRepository.save(group);
     }
 
-    public void removeUserFromAllGroups(User user) {
-        findAllWidthUser(user).forEach(x -> removeUserFromGroup(x, user));
-    }
-
     public Group addUserToGroup(AddUserCommand command) throws GroupNotFoundException, UserNotFoundException {
         var group = groupRepository.getById(command.groupId());
         var user = userRepository.getById(command.userId());
@@ -68,20 +62,20 @@ public class GroupUserService {
         return removeUserFromGroup(group, user);
     }
 
-    @EventListener
-    public void handleGroupCreated(GroupCreatedEvent event) {
-        var group = event.getGroup();
-        var user = currentUserProvider.getUser();
-        addUserToGroup(group, user);
+    public void removeUserFromAllGroups(User user) {
+        findAllWidthUser(user).forEach(x -> removeUserFromGroup(x, user));
     }
 
-    @EventListener
-    public void handleGroupDeleted(GroupDeletedEvent event) {
-        var group = event.getGroup();
-        var users = group.getUsersIds().stream().map(userRepository::findById).filter(Optional::isPresent).map(Optional::get).toList();
-        for (var user : users) {
-            user.removeFromGroup(group.getId());
-            userRepository.save(user);
+    public Group removeAllUsersFromGroup(Group group) {
+        for (var userId : group.getUsersIds()) {
+            group.removeUser(userId);
+
+            var userOpt = userRepository.findById(userId);
+            if (userOpt.isPresent()) {
+                userOpt.get().removeFromGroup(group.getId());
+                userRepository.save(userOpt.get());
+            }
         }
+        return groupRepository.save(group);
     }
 }

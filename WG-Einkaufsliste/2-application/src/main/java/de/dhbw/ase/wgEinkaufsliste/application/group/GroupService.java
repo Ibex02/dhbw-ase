@@ -15,7 +15,7 @@ public interface GroupService {
 
     List<Group> getAllForUser(User user);
 
-    Group createWithUser(String name, User user);
+    Group create(CreateGroupCommand command);
 
     Group changeName(ChangeNameCommand command) throws GroupNotFoundException;
 

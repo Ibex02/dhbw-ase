@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document("shopping-items")
+@Document("shopping-list")
 public record ShoppingListRecord(@Id String id, String groupId, String name, List<ShoppingListRecordItem> items) {
     public record ShoppingListRecordItem(String id, String name, int quantity) { }
 }

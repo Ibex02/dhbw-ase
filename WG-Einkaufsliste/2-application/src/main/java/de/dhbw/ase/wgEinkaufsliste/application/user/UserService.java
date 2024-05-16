@@ -44,7 +44,7 @@ public class UserService {
     }
 
     public void delete(User user) {
-        groupService.findAllWidthUser(user).forEach(x -> groupService.removeUserFromGroup(x, user));
+        groupService.removeUserFromAllGroups(user);
         userRepository.deleteById(user.getId());
     }
 

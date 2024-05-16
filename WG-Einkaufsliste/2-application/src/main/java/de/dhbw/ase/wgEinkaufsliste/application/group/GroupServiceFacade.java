@@ -2,6 +2,7 @@ package de.dhbw.ase.wgEinkaufsliste.application.group;
 
 import de.dhbw.ase.wgEinkaufsliste.application.group.command.AddUserCommand;
 import de.dhbw.ase.wgEinkaufsliste.application.group.command.ChangeNameCommand;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.CreateGroupCommand;
 import de.dhbw.ase.wgEinkaufsliste.application.group.command.RemoveUserCommand;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
@@ -37,9 +38,8 @@ public class GroupServiceFacade implements GroupService {
     }
 
     @Override
-    public Group createWithUser(String name, User user) {
-        var group = groupManagementService.create(name);
-        return groupUserService.addUserToGroup(group, user);
+    public Group create(CreateGroupCommand command) {
+        return groupManagementService.create(command);
     }
 
     @Override

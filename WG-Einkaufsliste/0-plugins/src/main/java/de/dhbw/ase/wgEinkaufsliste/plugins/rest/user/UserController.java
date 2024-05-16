@@ -46,6 +46,8 @@ public class UserController {
             return ResponseEntity.ok(resource);
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.badRequest().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 

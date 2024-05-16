@@ -1,5 +1,5 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group.command;
 
-import org.apache.catalina.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 
 public record CreateGroupCommand(String name, User initialUser) { }
