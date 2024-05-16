@@ -17,7 +17,7 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(User user) {
         this.user = user;
         this.userDetails = builder()
-                .username(user.getEmail())
+                .username(user.getEmail().value())
                 .password(user.getPassword())
                 .build();
     }

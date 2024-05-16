@@ -2,6 +2,7 @@ package de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.Email;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,9 +18,10 @@ public class UserToUserRecordMapper implements Function<User, UserRecord> {
 
     private UserRecord map(User user) {
         var id = user.getId().value();
+        var email = user.getEmail().value();
         var groupIds = mapGroupIds(user.getGroupIds());
 
-        return new UserRecord(id, user.getEmail(), user.getPassword(), user.getName(), groupIds);
+        return new UserRecord(id, email, user.getPassword(), user.getName(), groupIds);
     }
 
     private List<String> mapGroupIds(List<GroupId> ids) {

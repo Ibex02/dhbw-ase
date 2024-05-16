@@ -5,6 +5,7 @@ import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.user.UserToUserRecordMap
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.Email;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -32,8 +33,8 @@ public class UserRepositoryBridge implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        var record = repository.findUserByEmail(email);
+    public Optional<User> findByEmail(Email email) {
+        var record = repository.findUserByEmail(email.value());
         return record.map(mapFromRecord);
     }
 

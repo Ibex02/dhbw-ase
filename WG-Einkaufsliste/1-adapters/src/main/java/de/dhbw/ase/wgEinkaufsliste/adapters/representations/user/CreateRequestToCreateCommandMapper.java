@@ -2,6 +2,7 @@ package de.dhbw.ase.wgEinkaufsliste.adapters.representations.user;
 
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.user.request.CreateUserRequest;
 import de.dhbw.ase.wgEinkaufsliste.application.user.command.CreateUserCommand;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.Email;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -15,6 +16,7 @@ public class CreateRequestToCreateCommandMapper implements Function<CreateUserRe
     }
 
     private CreateUserCommand map(CreateUserRequest request) {
-        return new CreateUserCommand(request.email(), request.password(), request.name());
+        var email = new Email(request.email());
+        return new CreateUserCommand(email, request.password(), request.name());
     }
 }

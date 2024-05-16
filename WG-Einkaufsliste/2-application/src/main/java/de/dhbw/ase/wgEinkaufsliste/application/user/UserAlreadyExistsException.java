@@ -1,14 +1,16 @@
 package de.dhbw.ase.wgEinkaufsliste.application.user;
 
-public class UserAlreadyExistsException extends Exception {
-    private final String email;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.Email;
 
-    public UserAlreadyExistsException(String email) {
-        super("User with email: " + email + " already exists!");
+public class UserAlreadyExistsException extends Exception {
+    private final Email email;
+
+    public UserAlreadyExistsException(Email email) {
+        super("User with value: " + email.value() + " already exists!");
         this.email = email;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return email;
     }
 }

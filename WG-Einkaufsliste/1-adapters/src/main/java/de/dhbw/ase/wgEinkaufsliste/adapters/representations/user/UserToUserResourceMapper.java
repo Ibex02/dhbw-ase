@@ -3,6 +3,7 @@ package de.dhbw.ase.wgEinkaufsliste.adapters.representations.user;
 
 import de.dhbw.ase.wgEinkaufsliste.adapters.representations.user.resource.UserResource;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.Email;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -17,6 +18,8 @@ public class UserToUserResourceMapper implements Function<User, UserResource> {
 
     private UserResource map(User user) {
         var id = user.getId().value();
-        return new UserResource(id, user.getEmail(), user.getName());
+        var email = user.getEmail().value();
+
+        return new UserResource(id, email, user.getName());
     }
 }

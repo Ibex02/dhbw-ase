@@ -1,7 +1,7 @@
 package de.dhbw.ase.wgEinkaufsliste.domain.user;
 
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.validator.EmailValidator;
 import org.apache.commons.lang3.Validate;
 
@@ -9,12 +9,12 @@ import java.util.*;
 
 public class User {
     private final UserId id;
-    private final String email;
+    private final Email email;
     private final String passwordHash;
     private String name;
     private Set<GroupId> groupIds = new HashSet<>();
 
-    public User(UserId id, String email, String passwordHash, String name, Collection<GroupId> groupIds) {
+    public User(UserId id, Email email, String passwordHash, String name, Collection<GroupId> groupIds) {
         this.id = id;
         this.email = email;
         this.passwordHash = passwordHash;
@@ -24,7 +24,7 @@ public class User {
         validate();
     }
 
-    public User(String email, String passwordHash, String name) {
+    public User(Email email, String passwordHash, String name) {
         this.id = new UserId();
         this.name = name;
         this.passwordHash = passwordHash;
@@ -36,7 +36,7 @@ public class User {
     public UserId getId() {
         return id;
     }
-    public String getEmail() {
+    public Email getEmail() {
         return email;
     }
     public String getPassword() {
@@ -64,11 +64,7 @@ public class User {
     private void validate() {
         Objects.requireNonNull(id);
         Objects.requireNonNull(groupIds);
-        Validate.notBlank(email);
         Validate.notBlank(name);
         Validate.notBlank(passwordHash);
-
-        var emailValidator = EmailValidator.getInstance();
-        Validate.isTrue(emailValidator.isValidEmailAddress(email));
     }
 }

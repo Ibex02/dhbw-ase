@@ -4,6 +4,7 @@ import de.dhbw.ase.wgEinkaufsliste.application.group.GroupUserService;
 import de.dhbw.ase.wgEinkaufsliste.application.user.command.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserRepository;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.values.Email;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.values.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Optional<User> findByEmail(String email) {
+    public Optional<User> findByEmail(Email email) {
         return userRepository.findByEmail(email);
     }
 

@@ -20,7 +20,7 @@ public class EmailValidatorTests {
     public void testInvalidEmail() {
         EmailValidator validator = EmailValidator.getInstance();
         assertFalse(validator.isValidEmailAddress("invalidemail"));
-        assertFalse(validator.isValidEmailAddress("invalid.email@"));
+        assertFalse(validator.isValidEmailAddress("invalid.value@"));
         assertFalse(validator.isValidEmailAddress("invalid@.com"));
         assertFalse(validator.isValidEmailAddress("invalid@domain"));
     }
