@@ -39,24 +39,13 @@ public class GroupUserService {
         user.removeFromGroup(group.getId());
         userRepository.save(user);
 
-        if (group.isEmpty()) {
-            groupRepository.deleteById(group.getId());
-            return group;
-        }
-
-        return groupRepository.save(group);
+        return deleteGroupIfEmpty(group);
     }
 
     public void removeUserFromAllGroups(User user) {
         for (var group : groupRepository.findAllWithUser(user)) {
-
             user.removeFromGroup(group.getId());
-
-            if (group.isEmpty()) {
-                groupRepository.deleteById(group.getId());
-            }
-
-            groupRepository.save(group);
+            deleteGroupIfEmpty(group);
         }
 
         userRepository.save(user);
@@ -72,6 +61,15 @@ public class GroupUserService {
                 userRepository.save(userOpt.get());
             }
         }
+        return groupRepository.save(group);
+    }
+
+    private Group deleteGroupIfEmpty(Group group) {
+        if (group.isEmpty()) {
+            groupRepository.deleteById(group.getId());
+            return group;
+        }
+
         return groupRepository.save(group);
     }
 }
