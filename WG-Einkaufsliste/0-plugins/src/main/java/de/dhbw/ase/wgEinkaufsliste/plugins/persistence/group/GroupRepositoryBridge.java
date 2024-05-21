@@ -1,15 +1,13 @@
 package de.dhbw.ase.wgEinkaufsliste.plugins.persistence.group;
 
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.GroupRecordToGroupMapper;
-import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.GroupToGroupRecordMapper;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupRepository;
+import de.dhbw.ase.wgEinkaufsliste.adapters.persistence.groups.*;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class GroupRepositoryBridge implements GroupRepository {
@@ -29,6 +27,12 @@ public class GroupRepositoryBridge implements GroupRepository {
     public Optional<Group> findById(GroupId id) {
         var record = repository.findById(id.value());
         return record.map(mapFromRecord);
+    }
+
+    @Override
+    public Collection<Group> findAllWithUser(User user) {
+        return user.getGroupIds().stream().map(this::findById)
+                .filter(Optional::isPresent).map(Optional::get).toList();
     }
 
     @Override

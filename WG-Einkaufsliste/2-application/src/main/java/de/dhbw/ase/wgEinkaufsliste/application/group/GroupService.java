@@ -1,19 +1,16 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
 import de.dhbw.ase.wgEinkaufsliste.application.group.command.*;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public interface GroupService {
     Optional<Group> findById(GroupId id);
 
-    List<Group> getAllForUser(User user);
+    Collection<Group> getAllForUser(User user);
 
     Group create(CreateGroupCommand command);
 

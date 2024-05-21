@@ -7,8 +7,6 @@ import de.dhbw.ase.wgEinkaufsliste.domain.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
 @Service
 public class GroupUserService {
     private final GroupRepository groupRepository;
@@ -18,11 +16,6 @@ public class GroupUserService {
     public GroupUserService(GroupRepository groupRepository, UserRepository userRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
-    }
-
-    public List<Group> findAllWithUser(User user) {
-        return user.getGroupIds().stream().map(groupRepository::findById)
-                .filter(Optional::isPresent).map(Optional::get).toList();
     }
 
     public Group addUserToGroup(Group group, User user) {
@@ -60,7 +53,7 @@ public class GroupUserService {
     }
 
     public void removeUserFromAllGroups(User user) {
-        findAllWithUser(user).forEach(x -> removeUserFromGroup(x, user));
+        groupRepository.findAllWithUser(user).forEach(x -> removeUserFromGroup(x, user));
     }
 
     public Group removeAllUsersFromGroup(Group group) {

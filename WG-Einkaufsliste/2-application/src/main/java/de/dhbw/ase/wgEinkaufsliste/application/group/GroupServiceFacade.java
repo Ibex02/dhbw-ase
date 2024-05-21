@@ -1,30 +1,26 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
-import de.dhbw.ase.wgEinkaufsliste.application.group.command.AddUserCommand;
-import de.dhbw.ase.wgEinkaufsliste.application.group.command.ChangeNameCommand;
-import de.dhbw.ase.wgEinkaufsliste.application.group.command.CreateGroupCommand;
-import de.dhbw.ase.wgEinkaufsliste.application.group.command.RemoveUserCommand;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.Group;
-import de.dhbw.ase.wgEinkaufsliste.domain.group.GroupNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.application.group.command.*;
+import de.dhbw.ase.wgEinkaufsliste.domain.group.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.User;
-import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
+import de.dhbw.ase.wgEinkaufsliste.domain.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class GroupServiceFacade implements GroupService {
 
     private final GroupManagementService groupManagementService;
     private final GroupUserService groupUserService;
+    private final GroupRepository groupRepository;
 
     @Autowired
-    public GroupServiceFacade(GroupManagementService groupManagementService, GroupUserService groupUserService) {
+    public GroupServiceFacade(GroupManagementService groupManagementService, GroupUserService groupUserService, GroupRepository groupRepository) {
         this.groupManagementService = groupManagementService;
         this.groupUserService = groupUserService;
+        this.groupRepository = groupRepository;
     }
 
     @Override
@@ -33,8 +29,8 @@ public class GroupServiceFacade implements GroupService {
     }
 
     @Override
-    public List<Group> getAllForUser(User user) {
-        return groupUserService.findAllWithUser(user);
+    public Collection<Group> getAllForUser(User user) {
+        return groupRepository.findAllWithUser(user);
     }
 
     @Override
