@@ -49,11 +49,31 @@ public class GroupUserService {
     public Group removeUserFromGroup(RemoveUserCommand command) throws GroupNotFoundException, UserNotFoundException {
         var group = groupRepository.getById(command.groupId());
         var user = userRepository.getById(command.userId());
-        return removeUserFromGroup(group, user);
+
+        user.removeFromGroup(group.getId());
+        userRepository.save(user);
+
+        if (group.isEmpty()) {
+            groupRepository.deleteById(group.getId());
+            return group;
+        }
+
+        return groupRepository.save(group);
     }
 
     public void removeUserFromAllGroups(User user) {
-        groupRepository.findAllWithUser(user).forEach(x -> removeUserFromGroup(x, user));
+        for (var group : groupRepository.findAllWithUser(user)) {
+
+            user.removeFromGroup(group.getId());
+
+            if (group.isEmpty()) {
+                groupRepository.deleteById(group.getId());
+            }
+
+            groupRepository.save(group);
+        }
+
+        userRepository.save(user);
     }
 
     public Group removeAllUsersFromGroup(Group group) {
