@@ -34,7 +34,7 @@ public class GroupServiceFacade implements GroupService {
 
     @Override
     public List<Group> getAllForUser(User user) {
-        return groupUserService.findAllWidthUser(user);
+        return groupUserService.findAllWithUser(user);
     }
 
     @Override

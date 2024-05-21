@@ -29,10 +29,6 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Optional<User> findByEmail(Email email) {
-        return userRepository.findByEmail(email);
-    }
-
     public User create(CreateUserCommand command) throws UserAlreadyExistsException {
         var userOpt = userRepository.findByEmail(command.email());
         if (userOpt.isPresent()) throw new UserAlreadyExistsException(command.email());

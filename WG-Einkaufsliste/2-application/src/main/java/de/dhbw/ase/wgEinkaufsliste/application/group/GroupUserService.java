@@ -1,7 +1,6 @@
 package de.dhbw.ase.wgEinkaufsliste.application.group;
 
 import de.dhbw.ase.wgEinkaufsliste.application.group.command.*;
-import de.dhbw.ase.wgEinkaufsliste.application.user.CurrentUserProvider;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.UserNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.*;
@@ -14,16 +13,14 @@ import java.util.*;
 public class GroupUserService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
-    private final CurrentUserProvider currentUserProvider;
 
     @Autowired
-    public GroupUserService(GroupRepository groupRepository, UserRepository userRepository, CurrentUserProvider currentUserProvider) {
+    public GroupUserService(GroupRepository groupRepository, UserRepository userRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
-        this.currentUserProvider = currentUserProvider;
     }
 
-    public List<Group> findAllWidthUser(User user) {
+    public List<Group> findAllWithUser(User user) {
         return user.getGroupIds().stream().map(groupRepository::findById)
                 .filter(Optional::isPresent).map(Optional::get).toList();
     }
@@ -34,6 +31,12 @@ public class GroupUserService {
 
         userRepository.save(user);
         return groupRepository.save(group);
+    }
+
+    public Group addUserToGroup(AddUserCommand command) throws GroupNotFoundException, UserNotFoundException {
+        var group = groupRepository.getById(command.groupId());
+        var user = userRepository.getById(command.userId());
+        return addUserToGroup(group, user);
     }
 
     public Group removeUserFromGroup(Group group, User user) {
@@ -50,12 +53,6 @@ public class GroupUserService {
         return groupRepository.save(group);
     }
 
-    public Group addUserToGroup(AddUserCommand command) throws GroupNotFoundException, UserNotFoundException {
-        var group = groupRepository.getById(command.groupId());
-        var user = userRepository.getById(command.userId());
-        return addUserToGroup(group, user);
-    }
-
     public Group removeUserFromGroup(RemoveUserCommand command) throws GroupNotFoundException, UserNotFoundException {
         var group = groupRepository.getById(command.groupId());
         var user = userRepository.getById(command.userId());
@@ -63,7 +60,7 @@ public class GroupUserService {
     }
 
     public void removeUserFromAllGroups(User user) {
-        findAllWidthUser(user).forEach(x -> removeUserFromGroup(x, user));
+        findAllWithUser(user).forEach(x -> removeUserFromGroup(x, user));
     }
 
     public Group removeAllUsersFromGroup(Group group) {
