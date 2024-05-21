@@ -32,20 +32,6 @@ public class GroupUserService {
         return addUserToGroup(group, user);
     }
 
-    public Group removeUserFromGroup(Group group, User user) {
-        group.removeUser(user.getId());
-        user.removeFromGroup(group.getId());
-
-        userRepository.save(user);
-
-        if (group.isEmpty()) {
-            groupRepository.deleteById(group.getId());
-            return group;
-        }
-
-        return groupRepository.save(group);
-    }
-
     public Group removeUserFromGroup(RemoveUserCommand command) throws GroupNotFoundException, UserNotFoundException {
         var group = groupRepository.getById(command.groupId());
         var user = userRepository.getById(command.userId());
