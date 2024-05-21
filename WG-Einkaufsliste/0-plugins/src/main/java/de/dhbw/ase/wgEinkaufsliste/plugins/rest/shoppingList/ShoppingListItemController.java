@@ -39,7 +39,7 @@ public class ShoppingListItemController {
     public ResponseEntity<ShoppingListResource> addItem(@PathVariable String listId, @RequestBody AddShoppingListItemRequest request) {
         try {
             var command = mapRequestToCommand.apply(Pair.of(new ShoppingListId(listId), request));
-            var shoppingList = shoppingListService.addItem(command.listId(), command.name(), command.quantity(), command.remarks());
+            var shoppingList = shoppingListService.addItem(command);
             var resource = mapToResource.apply(shoppingList);
 
             return ResponseEntity.ok(resource);

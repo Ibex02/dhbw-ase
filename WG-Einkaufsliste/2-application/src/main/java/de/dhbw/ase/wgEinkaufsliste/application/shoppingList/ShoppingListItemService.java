@@ -21,9 +21,9 @@ public class ShoppingListItemService {
         this.shoppingListRepository = shoppingListRepository;
     }
 
-    public ShoppingList addItem(ShoppingListId listId, String name, Quantity quantity, String remarks) throws ShoppingListNotFoundException {
-        var list = shoppingListRepository.getById(listId);
-        var item = new ShoppingListItem(name, quantity, remarks);
+    public ShoppingList addItem(AddShoppingListItemCommand command) throws ShoppingListNotFoundException {
+        var list = shoppingListRepository.getById(command.listId());
+        var item = new ShoppingListItem(command.name(), command.quantity(), command.remarks());
 
         list.addOrUpdateItem(item);
         return shoppingListRepository.save(list);
