@@ -36,10 +36,10 @@ public class ShoppingListItemController {
     @PostMapping("")
     @ApiResponse(responseCode = "200")
     @ApiResponse(responseCode = "404", content = @Content)
-    public ResponseEntity<ShoppingListResource> addOrUpdateItem(@PathVariable String listId, @RequestBody AddShoppingListItemRequest request) {
+    public ResponseEntity<ShoppingListResource> addItem(@PathVariable String listId, @RequestBody AddShoppingListItemRequest request) {
         try {
             var command = mapRequestToCommand.apply(Pair.of(new ShoppingListId(listId), request));
-            var shoppingList = shoppingListService.addItem(command);
+            var shoppingList = shoppingListService.addItem(command.listId(), command.name(), command.quantity(), command.remarks());
             var resource = mapToResource.apply(shoppingList);
 
             return ResponseEntity.ok(resource);

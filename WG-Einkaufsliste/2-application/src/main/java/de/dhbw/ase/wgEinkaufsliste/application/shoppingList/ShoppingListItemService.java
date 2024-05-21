@@ -7,6 +7,7 @@ import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListItem;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListNotFoundException;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.ShoppingListRepository;
 import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.Quantity;
+import de.dhbw.ase.wgEinkaufsliste.domain.shoppingList.values.ShoppingListId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,9 @@ public class ShoppingListItemService {
         this.shoppingListRepository = shoppingListRepository;
     }
 
-    public ShoppingList addItem(AddShoppingListItemCommand command) throws ShoppingListNotFoundException {
-        var list = shoppingListRepository.getById(command.listId());
-        var item = new ShoppingListItem(command.name(), command.quantity(), command.remarks());
+    public ShoppingList addItem(ShoppingListId listId, String name, Quantity quantity, String remarks) throws ShoppingListNotFoundException {
+        var list = shoppingListRepository.getById(listId);
+        var item = new ShoppingListItem(name, quantity, remarks);
 
         list.addOrUpdateItem(item);
         return shoppingListRepository.save(list);
