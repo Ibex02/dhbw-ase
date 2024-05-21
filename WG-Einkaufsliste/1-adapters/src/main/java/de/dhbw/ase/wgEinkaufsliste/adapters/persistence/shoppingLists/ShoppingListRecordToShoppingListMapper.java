@@ -30,6 +30,6 @@ public class ShoppingListRecordToShoppingListMapper implements Function<Shopping
         var id = new ShoppingListItemId(item.id());
         var quantity = new Quantity(item.quantity());
 
-        return new ShoppingListItem(id, item.name(), quantity);
+        return new ShoppingListItem(id, item.name(), quantity, item.remarks());
     }
 }

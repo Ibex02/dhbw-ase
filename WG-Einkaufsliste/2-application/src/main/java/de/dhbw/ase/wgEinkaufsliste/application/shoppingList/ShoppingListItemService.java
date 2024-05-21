@@ -22,7 +22,7 @@ public class ShoppingListItemService {
 
     public ShoppingList addItem(AddShoppingListItemCommand command) throws ShoppingListNotFoundException {
         var list = shoppingListRepository.getById(command.listId());
-        var item = new ShoppingListItem(command.name(), new Quantity(command.quantity()));
+        var item = new ShoppingListItem(command.name(), command.quantity(), command.remarks());
 
         list.addOrUpdateItem(item);
         return shoppingListRepository.save(list);
