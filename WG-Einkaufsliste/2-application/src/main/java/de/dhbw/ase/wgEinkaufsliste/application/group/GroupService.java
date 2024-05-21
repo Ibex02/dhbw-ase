@@ -4,21 +4,48 @@ import de.dhbw.ase.wgEinkaufsliste.application.group.command.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.*;
 import de.dhbw.ase.wgEinkaufsliste.domain.group.values.GroupId;
 import de.dhbw.ase.wgEinkaufsliste.domain.user.*;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-public interface GroupService {
-    Optional<Group> findById(GroupId id);
+@Service
+public class GroupService {
 
-    Collection<Group> getAllForUser(User user);
+    private final GroupManagementService groupManagementService;
+    private final GroupUserService groupUserService;
+    private final GroupRepository groupRepository;
 
-    Group create(CreateGroupCommand command);
+    public GroupService(GroupManagementService groupManagementService, GroupUserService groupUserService, GroupRepository groupRepository) {
+        this.groupManagementService = groupManagementService;
+        this.groupUserService = groupUserService;
+        this.groupRepository = groupRepository;
+    }
 
-    Group changeName(ChangeNameCommand command) throws GroupNotFoundException;
+    public Optional<Group> findById(GroupId id) {
+        return groupManagementService.findById(id);
+    }
 
-    void delete(GroupId id) throws GroupNotFoundException;
+    public Collection<Group> getAllForUser(User user) {
+        return groupRepository.findAllWithUser(user);
+    }
 
-    Group addUser(AddUserCommand command) throws UserNotFoundException, GroupNotFoundException;
+    public Group create(CreateGroupCommand command) {
+        return groupManagementService.create(command);
+    }
 
-    Group removeUser(RemoveUserCommand command) throws UserNotFoundException, GroupNotFoundException;
+    public Group changeName(ChangeNameCommand command) throws GroupNotFoundException {
+        return groupManagementService.changeName(command);
+    }
+
+    public void delete(GroupId id) throws GroupNotFoundException {
+        groupManagementService.delete(id);
+    }
+
+    public Group addUser(AddUserCommand command) throws UserNotFoundException, GroupNotFoundException {
+        return groupUserService.addUserToGroup(command);
+    }
+
+    public Group removeUser(RemoveUserCommand command) throws UserNotFoundException, GroupNotFoundException {
+        return groupUserService.removeUserFromGroup(command);
+    }
 }
